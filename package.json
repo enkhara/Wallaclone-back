@@ -3,14 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "cross-env PORT=3000 NODE_ENV=development DEBUG=nodeapi:* nodemon"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",
+    "cross-env": "^7.0.3",
     "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "i18n": "^0.13.2",
+    "jsonwebtoken": "^8.5.1",
+    "mogoose": "0.0.1-security",
+    "mongoose": "^5.11.14",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.7",
+    "pm2": "^4.5.6"
   }
 }
