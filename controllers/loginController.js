@@ -5,14 +5,44 @@ const Usuario = require('../models/Usuario');
 
 class LoginController {
   /**
+   * POST /auth/signup
+   */
+  async post(req, res, next) {
+    try {
+      const { name, email, password } = req.body;
+
+      // buscar el usuario en la BD
+      const usuario = await Usuario.findOne({ email, name });
+      console.log('objeto de usuario', usuario);
+      // si no lo encontramos --> error
+      // si no coincide la clave --> error
+      if (usuario) {
+        const error = new Error('user already registered');
+        error.status = 401;
+        next(error);
+        return;
+      }
+      const usuarioData = req.body;
+      const newUsuario = new Usuario(usuarioData);
+
+      const usuarioCreado = await newUsuario.save();
+
+      res.status(201).json({ result: 'usuario Creado' });
+
+      console.log('se crea nuevo registro', usuarioCreado);
+    } catch (err) {
+      next(err);
+    }
+  }
+  /**
    * POST /auth/signin
    */
   async postJWT(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { name, password } = req.body;
 
       // buscar el usuario en la BD
-      const usuario = await Usuario.findOne({ email });
+      const usuario = await Usuario.findOne({ name });
 
       // si no lo encontramos --> error
       // si no coincide la clave --> error

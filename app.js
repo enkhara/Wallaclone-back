@@ -30,6 +30,8 @@ app.use('/users', usersRouter);
  *
  */
 app.post('/apiv1/auth/signin', loginController.postJWT);
+app.post('/apiv1/auth/signup', loginController.post);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
