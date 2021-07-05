@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+
+/**
+ * variable de entorno
+ */
+require('dotenv').config();
+
+
+
 /**
  * Module dependencies.
  */
