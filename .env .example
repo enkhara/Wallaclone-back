@@ -1,7 +1,0 @@
-MONGODB_CONNECTION_STR = mongodb://localhost/anuncio
-JWT_SECRET= secretToken
-
-EMAIL_SERVICE=serviceName
-EMAIL_SERVICE_USER=username
-EMAIL_SERVICE_PASS=password
-EMAIL_SERVICE_FROM=admin@wallaclone.com
