@@ -21,7 +21,7 @@ async function initUsuariosDB() {
   console.log(`Eliminados ${deletedCount} usuarios.`);
 
   const result = await Usuario.insertMany({
-    name: 'admin',
+    username: 'admin',
     email: 'admin@example.com',
     password: await Usuario.hashPassword('1234'),
   });

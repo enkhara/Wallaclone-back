@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
+
 const loginController = require('./controllers/loginController');
 
 var indexRouter = require('./routes/index');
@@ -31,8 +33,13 @@ app.use('/email', mailsRouter);
 /** Rutas del API
  *
  */
+
+app.use(cors());
+
 app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
+app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
+app.put('/apiv1/auth/new-password', loginController.createNewPassword);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

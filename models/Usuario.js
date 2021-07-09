@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
 
 const usuarioSchema = mongoose.Schema({
-  name: { type: String, index: true },
+  username: { type: String, index: true },
   email: { type: String, unique: true },
   password: String,
 });
