@@ -1,0 +1,85 @@
+[
+	{
+		"nombre": "Bicicleta",
+		"venta": true,
+		"precio": 230.15,
+		"foto": "bicicleta.jpg",
+		"tags": [
+			"lifestyle",
+			"motor"
+		], 
+        "vendido": false, 
+        "reservado": false
+	},
+	{
+		"nombre": "iPhone 3GS",
+		"venta": false,
+		"precio": 50.00,
+		"foto": "movil.jpg",
+		"tags": [
+			"lifestyle",
+			"mobile"
+		], 
+        "vendido": false, 
+        "reservado": false
+	},
+	{
+		"nombre": "Agendas",
+		"venta": true,
+		"precio": 25,
+		"foto": "agenda.jpg",
+		"tags": [
+			"work",
+			"lifestyle"
+		], 
+        "vendido": false, 
+        "reservado": true
+	},
+	{
+		"nombre": "Applewatch",
+		"venta": true,
+		"precio": 250.00,
+		"foto": "applewatch.jpg",
+		"tags": [
+			"lifestyle",
+			"mobile"
+		], 
+        "vendido": true, 
+        "reservado": false
+	},
+	{
+		"nombre": "Bicicleta niña",
+		"venta": true,
+		"precio": 50,
+		"foto": "bici-peque.jpg",
+		"tags": [
+			"motor",
+			"lifestyle"
+		], 
+        "vendido": false, 
+        "reservado": false
+	},
+	{
+		"nombre": "Bowl",
+		"venta": true,
+		"precio": 6.99,
+		"foto": "bowl.jpg",
+		"tags": [
+			"lifestyle",
+			"kitchen"
+		], 
+        "vendido": false, 
+        "reservado": false
+	},
+	{
+		"nombre": "Cachorros Labrador",
+		"venta": false,
+		"precio": 250,
+		"foto": "cachorros.jpg",
+		"tags": [
+			"lifestyle"
+		], 
+        "vendido": false, 
+        "reservado": false
+	}
+]
