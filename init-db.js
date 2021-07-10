@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const mongoose = require('./lib/connectMongoose');
+const mongoose = require('./models/connectMongoose');
 const Usuario = require('./models/Usuario');
 const Anuncio = require('./models/Anuncio');
 const anunciosData = require('./anuncios.json');

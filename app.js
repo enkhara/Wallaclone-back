@@ -13,7 +13,7 @@ var mailsRouter = require('./routes/mail');
 
 var app = express();
 
-require('./lib/connectMongoose');
+require('./models/connectMongoose');
 require('dotenv').config();
 
 // view engine setup
