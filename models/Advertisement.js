@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // definimos un esquema, le pasamos un objecto
 // es opcional añadir la colección
 // Al poner la opción de index:true creamos indice para el campo de la colección
-const advertisemntSchema = mongoose.Schema({
+const advertisementSchema = mongoose.Schema({
     name: {type:String, index:true}, 
     sale:  {type:Boolean, index:true},
     price: {type:Number, index:true}, 
