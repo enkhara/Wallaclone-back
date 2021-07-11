@@ -40,6 +40,7 @@ app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
 app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
 app.put('/apiv1/auth/new-password', loginController.createNewPassword);
+app.use('/apiv1/advertisements', require('./routes/api/advertisements'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

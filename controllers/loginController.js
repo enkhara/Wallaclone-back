@@ -8,28 +8,26 @@ class LoginController {
 	/**
 	 * POST /auth/signup
 	 */
-	async post(req, res, next) {
-		try {
-			const { username, email, password } = req.body;
-			Usuario.hashPassword(password).then((hash) => {
-				Usuario.create({
-					username: username,
-					email: email,
-					password: hash,
+	post(req, res, next) {
+		const { username, email, password } = req.body;
+		Usuario.hashPassword(password).then((hash) => {
+			Usuario.create({
+				username: username,
+				email: email,
+				password: hash,
+			})
+				.then(() => {
+					res.json('USER REGISTERED');
 				})
-					.then(() => {
-						res.json('USER REGISTERED');
-					})
-					.catch((error) => {
-						if (error) {
-							res.status(400).json({ error: error });
-						}
-					});
-			});
-		} catch (err) {
-			next(err);
-		}
+				.catch((error) => {
+					if (error) {
+						res.status(400).json({ error: error });
+						console.log(error);
+					}
+				});
+		});
 	}
+
 	/**
 	 * POST /auth/signin
 	 */

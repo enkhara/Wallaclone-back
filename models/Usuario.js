@@ -7,7 +7,7 @@ const emailTransportConfigure = require('../lib/emailTransportConfigure');
 
 const usuarioSchema = mongoose.Schema({
 	username: { type: String, unique: true, index: true },
-	email: { type: String, unique: true },
+	email: { type: String, unique: true, index: true },
 	password: String,
 });
 
