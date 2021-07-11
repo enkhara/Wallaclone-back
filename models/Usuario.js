@@ -6,32 +6,30 @@ const nodemailer = require('nodemailer');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
 
 const usuarioSchema = mongoose.Schema({
-  username: { type: String, index: true },
-  email: { type: String, unique: true },
-  password: String,
+	username: { type: String, unique: true, index: true },
+	email: { type: String, unique: true },
+	password: String,
 });
 
 usuarioSchema.statics.hashPassword = function (passwordEnClaro) {
-  return bcrypt.hash(passwordEnClaro, 7);
+	return bcrypt.hash(passwordEnClaro, 7);
 };
 
 usuarioSchema.methods.comparePassword = function (passwordEnClaro) {
-  return bcrypt.compare(passwordEnClaro, this.password);
+	return bcrypt.compare(passwordEnClaro, this.password);
 };
 
-usuarioSchema.methods.enviaEmail = async function(asunto, cuerpo) {
+usuarioSchema.methods.enviaEmail = async function (asunto, cuerpo) {
+	const transport = await emailTransportConfigure();
 
-  const transport = await emailTransportConfigure();
-
-  // enviar el correo
-  return transport.sendMail({
-    from: process.env.EMAIL_SERVICE_FROM,
-    to: 'amoltovil@gmail.com', //this.email,
-    subject: asunto,
-    html: cuerpo
-  });
-
-}
+	// enviar el correo
+	return transport.sendMail({
+		from: process.env.EMAIL_SERVICE_FROM,
+		to: 'amoltovil@gmail.com', //this.email,
+		subject: asunto,
+		html: cuerpo,
+	});
+};
 
 const Usuario = mongoose.model('Usuario', usuarioSchema);
 
