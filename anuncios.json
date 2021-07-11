@@ -1,85 +1,92 @@
 [
 	{
-		"nombre": "Bicicleta",
-		"venta": true,
-		"precio": 230.15,
-		"foto": "bicicleta.jpg",
+		"name": "Bicicleta",
+		"sale": true,
+		"price": 230.15,
+		"image": "bicicleta.jpg",
 		"tags": [
 			"lifestyle",
 			"motor"
 		], 
-        "vendido": false, 
-        "reservado": false
+        "sell": false, 
+        "reserved": false, 
+		"userId": "1"
 	},
 	{
-		"nombre": "iPhone 3GS",
-		"venta": false,
-		"precio": 50.00,
-		"foto": "movil.jpg",
+		"name": "iPhone 3GS",
+		"sale": false,
+		"price": 50.00,
+		"image": "movil.jpg",
 		"tags": [
 			"lifestyle",
 			"mobile"
 		], 
-        "vendido": false, 
-        "reservado": false
+        "sell": false, 
+        "reserved": false, 
+		"userId": "1"
 	},
 	{
-		"nombre": "Agendas",
-		"venta": true,
-		"precio": 25,
-		"foto": "agenda.jpg",
+		"name": "Agendas",
+		"sale": true,
+		"price": 25,
+		"image": "agenda.jpg",
 		"tags": [
 			"work",
 			"lifestyle"
 		], 
-        "vendido": false, 
-        "reservado": true
+        "sell": false, 
+        "reserved": true, 
+		"userId": "2"
 	},
 	{
-		"nombre": "Applewatch",
-		"venta": true,
-		"precio": 250.00,
-		"foto": "applewatch.jpg",
+		"name": "Applewatch",
+		"sale": true,
+		"price": 250.00,
+		"image": "applewatch.jpg",
 		"tags": [
 			"lifestyle",
 			"mobile"
 		], 
-        "vendido": true, 
-        "reservado": false
+        "sell": true, 
+        "reserved": false, 
+		"userId": "2"
 	},
 	{
-		"nombre": "Bicicleta niña",
-		"venta": true,
-		"precio": 50,
-		"foto": "bici-peque.jpg",
+		"name": "Bicicleta niña",
+		"sale": true,
+		"price": 50,
+		"image": "bici-peque.jpg",
 		"tags": [
 			"motor",
 			"lifestyle"
 		], 
-        "vendido": false, 
-        "reservado": false
+        "sell": false, 
+        "reserved": false, 
+		"userId": "1"
 	},
 	{
-		"nombre": "Bowl",
-		"venta": true,
-		"precio": 6.99,
-		"foto": "bowl.jpg",
+		"name": "Bowl",
+		"sale": true,
+		"price": 6.99,
+		"image": "bowl.jpg",
 		"tags": [
 			"lifestyle",
 			"kitchen"
 		], 
-        "vendido": false, 
-        "reservado": false
+        "sell": false, 
+        "reserved": false, 
+		"userId": "2"
 	},
 	{
-		"nombre": "Cachorros Labrador",
-		"venta": false,
-		"precio": 250,
-		"foto": "cachorros.jpg",
+		"name": "Cachorros Labrador",
+		"sale": false,
+		"price": 250,
+		"image": "cachorros.jpg",
 		"tags": [
 			"lifestyle"
 		], 
-        "vendido": false, 
-        "reservado": false
+        "sell": false, 
+        "reserved": false, 
+		"userId": "1"
 	}
 ]
