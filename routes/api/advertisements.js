@@ -1,21 +1,21 @@
 var express = require('express');
 var router = express.Router();
 const path = require('path');
-const Anuncio = require('../../models/Anuncio');  // cargamos el modelo
-//const jwtAuth = require('../../lib/jwtAuth');
-/*const multer = require('multer');
-const cote = require('cote');
+const Advertisement = require('../../models/Advertisement');  // cargamos el modelo
+const jwtAuth = require('../../lib/jwtAuth');
+const multer = require('multer');
+//const cote = require('cote');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-                 cb(null, path.join(__dirname, '../../public/images/anuncios/'));
+                 cb(null, path.join(__dirname, '../../public/images/adverts/'));
     },
     filename: function(req, file, cb) {
                  cb(null, file.originalname);
     }
 });
 
-const upload = multer({ storage });*/
+const upload = multer({ storage });
 
 /**
  * API ZONA PÚBLICA (No necesita el token)
@@ -33,12 +33,12 @@ router.get('/', async function(req, res, next) {
         var precios = [];
         var vtags=[];
     
-        const nombre = req.query.nombre;
-        const venta = req.query.venta;
-        const precio = req.query.precio;
+        const name = req.query.name;
+        const sale = req.query.sale;
+        const price = req.query.price;
         const tags = req.query.tags;
-        const vendido = req.query.vendido;
-        const reservado = req.query.reservado;
+        const sell = req.query.sell;
+        const reserved = req.query.reserved;
 
         const limit = parseInt(req.query.limit);  //lo convierte a num porque todo en req es string
         const skip = parseInt(req.query.skip);   // para paginar skip
@@ -49,36 +49,36 @@ router.get('/', async function(req, res, next) {
         // ordena por precio ascendente y nombre descendente
         
         const filtro = {}
-        if (nombre) {
-            filtro.nombre = new RegExp('^' + nombre, "i")
+        if (name) {
+            filtro.name = new RegExp('^' + name, "i")
            //filtro.nombre = nombre
         }
-        if (venta) {
-            filtro.venta = venta
+        if (sale) {
+            filtro.sale = sale
         }
-        if (vendido) {
-            filtro.vendido = vendido
+        if (sell) {
+            filtro.sell = sell
         }
-        if (reservado) {
-            filtro.reservado = reservado
+        if (reserved) {
+            filtro.reserved = reserved
         }
-       if (precio) {
-            if (precio.includes('-')) {
+       if (price) {
+            if (price.includes('-')) {
                 precios = precio.split('-');
                 if (precios.length == 2) {
                     if (!isNaN(parseFloat(precios[0])) && !isNaN(parseFloat(precios[1]))) {
-                        filtro.precio ={ $gte: parseFloat(precios[0]), $lte: parseFloat(precios[1]) }
+                        filtro.price ={ $gte: parseFloat(precios[0]), $lte: parseFloat(precios[1]) }
                     } else if (isNaN(parseFloat(precios[0])) && !isNaN(parseFloat(precios[1]))) {
                         // buscará los anuncios que sean menores a este precio    
-                        filtro.precio ={ $lte: parseFloat(precios[1]) }
+                        filtro.price ={ $lte: parseFloat(precios[1]) }
                     } else if (!isNaN(parseFloat(precios[0])) && isNaN(parseFloat(precios[1]))) {
                         // buscara los anuncios de precio mayor a este
-                        filtro.precio ={ $gte: parseFloat(precios[0]) }
+                        filtro.price ={ $gte: parseFloat(precios[0]) }
                     }
                 } 
             } else {
                 // solo nos pasan un precio, buscaremos solo por precio
-                filtro.precio = precio    
+                filtro.price = price
             }
         }
         // podremos buscar por varios tags separados por comas
@@ -91,7 +91,7 @@ router.get('/', async function(req, res, next) {
             }            
         }
 
-        const resultado = await Anuncio.lista(filtro, limit, skip, fields, sort)
+        const resultado = await Advertisement.lista(filtro, limit, skip, fields, sort)
         res.json(resultado);
 
     } catch (err){
@@ -107,7 +107,7 @@ router.get('/:id', async (req, res, next)=>{
     try {
         const _id = req.params.id;
 
-        const anuncio = await Anuncio.findOne({ _id: _id })
+        const anuncio = await Advertisement.findOne({ _id: _id })
 
         if (!anuncio) {
             return res.status(404).json({error: 'not found'}); 
@@ -123,20 +123,78 @@ router.get('/:id', async (req, res, next)=>{
 });
 
 /**
+ * GET /api/anuncios/user:UserId (Obtener los anuncios por userId)
+ */
+ router.get('/:id', async (req, res, next)=>{
+    try {
+        const _id = req.params.id;
+
+        const anuncio = await Advertisement.findOne({ _id: _id })
+
+        if (!anuncio) {
+            return res.status(404).json({error: 'not found'}); 
+            // es lo mismo la sentencia de arriba a lo de aqui abajo
+            //res.status(404).json({error: 'not found'}); 
+            //return; 
+        }
+        res.json({result:anuncio});
+
+    } catch(err) {
+        next(err);
+    }
+});
+
+/**
+ * GET /api/anuncios/user:UserId (Obtener los anuncios por userId)
+ */
+//  router.get('/user:id', async (req, res, next)=>{
+//     try {
+//         const _userId = req.params.id;
+
+//         const anuncio = await Advertisement.find({ userId: _userId })
+
+//         if (!anuncio) {
+//             return res.status(404).json({error: 'not found'}); 
+//             // es lo mismo la sentencia de arriba a lo de aqui abajo
+//             //res.status(404).json({error: 'not found'}); 
+//             //return; 
+//         }
+//         res.json({result:anuncio});
+
+//     } catch(err) {
+//         next(err);
+//     }
+// });
+
+/**
+ * API ZONA PRIVADA (Necesita el token para acceder)
+ */
+
+/**
  * POST /api/anuncios (body) crear un anuncio 
  */
 
-//POST /api/anuncios (body) crear un anuncio
-router.post('/', async (req, res, next) => {
+router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
+
+    console.log(`El usuario que está haciendo la petición es ${req.apiAuthUserId}`);
+    
     try {
         
-        const anuncioData = req.body;
+        var image = '';
+        var userId = req.apiAuthUserId;
+        const { name, sale, price, tags, updatedAt } = req.body;
+        if (req.file) {
+            image = req.file.filename;
+        }
+        //console.log('req.file', req.file);
+        //console.log('req.file.filename', req.file.filename);
+        //const anuncioData = req.body;
 
-        const anuncio = new Anuncio(anuncioData);   // crea una instancia de objecto Agente 
-        // este es un método de instancia
+        const anuncio = new Advertisement({name, sale, price, tags, updatedAt, image, userId}); 
+
         const anuncioCreado = await anuncio.save (); // lo guarda en base de datos
 
-        await anuncio.crear();
+        await anuncio.crear();  // le asigna el resto de campos (sell, reserved, updatedAt)
         
         res.status(201).json({result:anuncioCreado});
 
@@ -149,12 +207,12 @@ router.post('/', async (req, res, next) => {
  * PUT /api/anuncios:id (body)  
  * Actualizar un anuncio, en el body le pasamos lo que queremos actualizar
  */
-router.put('/:id', async (req, res, next) =>{
+router.put('/:id', jwtAuth, async (req, res, next) =>{
     try {
         const _id = req.params.id;
         const anuncioData = req.body;
         
-        const anuncioActualizado = await Anuncio.findOneAndUpdate({_id:_id}, anuncioData, {
+        const anuncioActualizado = await Advertisement.findOneAndUpdate({_id:_id}, anuncioData, {
              new: true, 
              useFindAndModify: false
          });
@@ -176,12 +234,12 @@ router.put('/:id', async (req, res, next) =>{
 /**
  * DELETE /api/anuncio: id (Elimina un anuncio dado su id)
  */
-router.delete('/:id', async (req, res, next)=>{
+router.delete('/:id', jwtAuth, async (req, res, next)=>{
     try {
         const _id = req.params.id;
 
         //await Anuncio.remove({_id:_id}); para evitar el error de la consola deprecated
-        await Anuncio.deleteOne({_id:_id});
+        await Advertisement.deleteOne({_id:_id});
         res.json();
 
     } catch (error) {
