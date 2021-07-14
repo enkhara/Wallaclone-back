@@ -67,7 +67,7 @@ class LoginController {
 
   async forgotPassword(req, res, next) {
     const { email } = req.body;
-    const message = 'revise su email link para restablecer su contraseña';
+    const message = 'check your email link to reset your password';
     let verificationLinks;
     let emailStatus = 'ok';
 
@@ -91,7 +91,7 @@ class LoginController {
     } catch (error) {
       console.log(error);
 
-      return res.status(400).json({ message: 'algo ha salido mal' });
+      return res.status(400).json({ message: 'Somenthing goes wrong !' });
     }
 
     res.json({ message, info: emailStatus, test: verificationLinks });
