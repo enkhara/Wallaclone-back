@@ -39,6 +39,7 @@ router.get('/', async function(req, res, next) {
         const tags = req.query.tags;
         const sell = req.query.sell;
         const reserved = req.query.reserved;
+       // http://localhost:3001/apiv1/advertisements/?userId=60eb19914d799d6a125a6669
         const userId = req.query.userId;
 
         const limit = parseInt(req.query.limit);  //lo convierte a num porque todo en req es string
