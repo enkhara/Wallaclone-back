@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
     // enviar el correo
     const info = await transport.sendMail({
       from: process.env.EMAIL_SERVICE_FROM,
-      to: 'amoltovil@gmail.com', //this.email, //mail del usuario
+      to: this.email, //mail del usuario
     //   subject: asunto,
     //   html: cuerpo
       subject: 'este es el asunto',

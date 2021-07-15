@@ -31,6 +31,19 @@ usuarioSchema.methods.enviaEmail = async function (asunto, cuerpo) {
 	});
 };
 
-const Usuario = mongoose.model('Usuario', usuarioSchema);
+// En los métodos de mongoose no usar Arrow Functions para no tener problemas con el this
+// es un método que no está dentro de mongoose
+usuarioSchema.statics.lista = async function (filtro, limit, skip, fields, sort){
+    const query = User.find(filtro); // no devuelve una promesa, devuelve una query que tiene un método then
+    query.limit(limit);
+    query.skip(skip);
+    query.select(fields);
+    query.sort(sort);
+    
+   return query.exec(); // devuelve una promesa
+    
+};
 
-module.exports = Usuario;
+const User = mongoose.model('Usuario', usuarioSchema);
+
+module.exports = User;

@@ -1,5 +1,5 @@
 module.exports = {
-	connectMongoose: require('./connectToMongoose'),
+	connectMongoose: require('./connectMongoose'),
 	Advertisement: require('./Advertisement'),
 	User: require('./Usuario'),
 	mongoose: require('mongoose'),
