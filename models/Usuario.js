@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
-const { getMaxListeners } = require('./Anuncio');
+//const { getMaxListeners } = require('./Anuncio');
 
 const usuarioSchema = mongoose.Schema({
   username: { type: String, unique: true, index: true },
