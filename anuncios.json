@@ -75,7 +75,7 @@
 		], 
         "sell": false, 
         "reserved": false, 
-		"userId": "2"
+		"userId": "60eb19914d799d6a125a666a"
 	},
 	{
 		"name": "Cachorros Labrador",
@@ -87,6 +87,6 @@
 		], 
         "sell": false, 
         "reserved": false, 
-		"userId": "1"
+		"userId": "60eb19914d799d6a125a666a"
 	}
 ]

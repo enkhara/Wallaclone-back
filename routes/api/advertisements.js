@@ -39,6 +39,8 @@ router.get('/', async function(req, res, next) {
         const tags = req.query.tags;
         const sell = req.query.sell;
         const reserved = req.query.reserved;
+       // http://localhost:3001/apiv1/advertisements/?userId=60eb19914d799d6a125a6669
+        const userId = req.query.userId;
 
         const limit = parseInt(req.query.limit);  //lo convierte a num porque todo en req es string
         const skip = parseInt(req.query.skip);   // para paginar skip
@@ -62,7 +64,11 @@ router.get('/', async function(req, res, next) {
         if (reserved) {
             filtro.reserved = reserved
         }
-       if (price) {
+        if (userId) {
+            filtro.userId = userId
+        }
+        
+        if (price) {
             if (price.includes('-')) {
                 precios = precio.split('-');
                 if (precios.length == 2) {
@@ -122,27 +128,6 @@ router.get('/:id', async (req, res, next)=>{
     }
 });
 
-/**
- * GET /api/anuncios/user:UserId (Obtener los anuncios por userId)
- */
- router.get('/:id', async (req, res, next)=>{
-    try {
-        const _id = req.params.id;
-
-        const anuncio = await Advertisement.findOne({ _id: _id })
-
-        if (!anuncio) {
-            return res.status(404).json({error: 'not found'}); 
-            // es lo mismo la sentencia de arriba a lo de aqui abajo
-            //res.status(404).json({error: 'not found'}); 
-            //return; 
-        }
-        res.json({result:anuncio});
-
-    } catch(err) {
-        next(err);
-    }
-});
 
 /**
  * GET /api/anuncios/user:UserId (Obtener los anuncios por userId)

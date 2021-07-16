@@ -5,7 +5,7 @@
   "scripts": {
     "init-db": "node init-db.js",
     "start": "node ./bin/www",
-    "dev": "cross-env PORT=3000 NODE_ENV=development DEBUG=wallaclone:* nodemon"
+    "dev": "cross-env PORT=3001 NODE_ENV=development DEBUG=wallaclone:* nodemon"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
