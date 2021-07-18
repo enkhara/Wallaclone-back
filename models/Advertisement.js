@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // definimos un esquema, le pasamos un objecto
 // es opcional añadir la colección
 // Al poner la opción de index:true creamos indice para el campo de la colección
-<<<<<<< HEAD
+
 const advertisementSchema = mongoose.Schema(
 	{
 		name: { type: String, index: true },
@@ -72,14 +72,14 @@ advertisementSchema.methods.desreservar = function () {
 // es un método que no está dentro de mongoose
 advertisementSchema.statics.lista = async function (
 	filtro,
-	limit,
 	skip,
+	limit,
 	fields,
 	sort
 ) {
 	const query = Advertisement.find(filtro); // no devuelve una promesa, devuelve una query que tiene un método then
-	query.limit(limit);
 	query.skip(skip);
+	query.limit(limit);
 	query.select(fields);
 	query.sort(sort);
 
