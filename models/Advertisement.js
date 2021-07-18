@@ -24,23 +24,23 @@ const advertisementSchema = mongoose.Schema({
 // Indice por texto
 //anuncioSchema.Index( { nombre: 'text'} );
 
-// Define query helper, son como métodos de instancia 
+// Define query helper, son como métodos de instancia
 advertisementSchema.query.byName = function (nombre) {
-    return this.where({ name: new RegExp(nombre, 'i') });
+	return this.where({ name: new RegExp(nombre, 'i') });
 };
 
-//para llamarlo en el controlador 
+//para llamarlo en el controlador
 // Anuncio.find().byName('Taza').exec((err, ads) => {
 //     console.log(ads);
 // });
 
 // Ejemplo de método de instancia
-advertisementSchema.methods.crear = function() {
-    this.updatedAt = Date.now();
-    this.sell = false;
-    this.reserved = false;
-    return this.save();
-}
+advertisementSchema.methods.crear = function () {
+	this.updatedAt = Date.now();
+	this.sell = false;
+	this.reserved = false;
+	return this.save();
+};
 
 advertisementSchema.methods.actualizar = function() {
     this.updatedAt = Date.now();
@@ -48,50 +48,55 @@ advertisementSchema.methods.actualizar = function() {
 }
 
 // Marcamos el anuncio como vendido
-advertisementSchema.methods.vender = function() {
-    this.sell = true;
-    return this.save();
-}
+advertisementSchema.methods.vender = function () {
+	this.sell = true;
+	return this.save();
+};
 
 // Marcamos el anuncio como no vendido
-advertisementSchema.methods.no_Vender = function() {
-    this.sell = false;
-    return this.save();
-}
+advertisementSchema.methods.no_Vender = function () {
+	this.sell = false;
+	return this.save();
+};
 
 // Marcamos el anuncio como reservado
-advertisementSchema.methods.reservar = function() {
-    this.reserved = true;
-    return this.save();
-}
+advertisementSchema.methods.reservar = function () {
+	this.reserved = true;
+	return this.save();
+};
 
 // Marcamos el anuncio como no reservado
-advertisementSchema.methods.desreservar = function() {
-    this.reserved = false;
-    return this.save();
-}
+advertisementSchema.methods.desreservar = function () {
+	this.reserved = false;
+	return this.save();
+};
 
 // En los métodos de mongoose no usar Arrow Functions para no tener problemas con el this
 // es un método que no está dentro de mongoose
-advertisementSchema.statics.lista = async function (filtro, limit, skip, fields, sort){
-    const query = Advertisement.find(filtro); // no devuelve una promesa, devuelve una query que tiene un método then
-    query.limit(limit);
-    query.skip(skip);
-    query.select(fields);
-    query.sort(sort);
-    
-   return query.exec(); // devuelve una promesa
-    
+advertisementSchema.statics.lista = async function (
+	filtro,
+	skip,
+	limit,
+	fields,
+	sort
+) {
+	const query = Advertisement.find(filtro); // no devuelve una promesa, devuelve una query que tiene un método then
+	query.skip(skip);
+	query.limit(limit);
+	query.select(fields);
+	query.sort(sort);
+
+	return query.exec(); // devuelve una promesa
 };
 
 // Método para listar los distintos tags definidos
-advertisementSchema.statics.listaTags = function() {
-    const query = Advertisement.find().distinct("tags");
-    return query.exec();
+advertisementSchema.statics.listaTags = function () {
+	const query = Advertisement.find().distinct('tags');
+	return query.exec();
 };
 
 // creamos el modelo con el esquema definido
-const Advertisement = mongoose.model('Advertisement', advertisementSchema); 
+const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
 //exportamos el modelo (opcional)
 module.exports = Advertisement;

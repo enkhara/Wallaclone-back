@@ -1,18 +1,18 @@
 var express = require('express');
 var router = express.Router();
 const path = require('path');
-const Advertisement = require('../../models/Advertisement');  // cargamos el modelo
+const Advertisement = require('../../models/Advertisement'); // cargamos el modelo
 const jwtAuth = require('../../lib/jwtAuth');
 const multer = require('multer');
 //const cote = require('cote');
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-                 cb(null, path.join(__dirname, '../../public/images/adverts/'));
-    },
-    filename: function(req, file, cb) {
-                 cb(null, file.originalname);
-    }
+	destination: function (req, file, cb) {
+		cb(null, path.join(__dirname, '../../public/images/adverts/'));
+	},
+	filename: function (req, file, cb) {
+		cb(null, file.originalname);
+	},
 });
 
 const upload = multer({ storage });
@@ -112,25 +112,43 @@ router.get('/', async function(req, res, next) {
 /**
  * GET /apiv1/advertisements:id (Obtener un anuncio por id)
  */
-router.get('/:id', async (req, res, next)=>{
-    try {
-        const _id = req.params.id;
+router.get('/:id', async (req, res, next) => {
+	try {
+		const _id = req.params.id;
 
-        const anuncio = await Advertisement.findOne({ _id: _id })
+		const advert = await Advertisement.findOne({ _id: _id });
 
-        if (!anuncio) {
-            return res.status(404).json({error: 'not found'}); 
-            // es lo mismo la sentencia de arriba a lo de aqui abajo
-            //res.status(404).json({error: 'not found'}); 
-            //return; 
-        }
-        res.json({result:anuncio});
-
-    } catch(err) {
-        next(err);
-    }
+		if (!advert) {
+			return res.status(404).json({ error: 'not found' });
+			// es lo mismo la sentencia de arriba a lo de aqui abajo
+			//res.status(404).json({error: 'not found'});
+			//return;
+		}
+		res.json({ result: advert });
+	} catch (err) {
+		next(err);
+	}
 });
 
+/** GET anuncios/paginación */
+// router.get('/adverts/:page', (req, res, next) => {
+// 	const perPage = 9;
+// 	const page = req.params.page || 1;
+
+// 	Advertisement.find({})
+// 		.skip(perPage * page - perPage)
+// 		.limit(perPage)
+// 		.exec((err, adverts) => {
+// 			Advertisement.count((err, count) => {
+// 				if (err) return next(error);
+// 				res.render('/adverts/adverts', {
+// 					adverts,
+// 					current: page,
+// 					pages: Math.ceil(count / perPage),
+// 				});
+// 			});
+// 		});
+// });
 
 /**
  * API ZONA PRIVADA (Necesita el token para acceder)
