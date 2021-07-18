@@ -68,6 +68,9 @@ class LoginController {
   async forgotPassword(req, res, next) {
     const { email } = req.body;
     const message = 'check your email link to reset your password';
+
+    const authPath = process.env.LOCAL_HOST_WEB_NEW_PASSWORD;
+
     let verificationLinks;
     let emailStatus = 'ok';
 
@@ -76,7 +79,7 @@ class LoginController {
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '2h',
       });
-      verificationLinks = `https://localhost:3000/apiv1/auth/new-password/${user._id}/${token}`;
+      verificationLinks = `${authPath}/id=${user._id}/token=${token}`;
       const message = await mailer(email, 'Forgot Password', verificationLinks);
       const transporter = await emailTransportConfigure();
 
