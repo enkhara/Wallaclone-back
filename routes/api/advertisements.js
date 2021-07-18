@@ -188,16 +188,36 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 });
 
 /**
- * PUT /apiv1/advertisements:id (body)  
+ * PUT /apiv1/advertisements/:id de anuncio 
  * Actualizar un anuncio, en el body le pasamos lo que queremos actualizar
- * TODO: no se deberia poder actualizar el userId del anuncio
+ * solo el usuario propietario del anuncio puede modificarlo
  */
-router.put('/:id', jwtAuth, async (req, res, next) =>{
+router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
+    
+    console.log(`El usuario que está haciendo la petición es ${req.apiAuthUserId}`);
+
     try {
         const _id = req.params.id;
-        const anuncioData = req.body;
+        //const anuncioData = req.body;
         
-        const anuncioActualizado = await Advertisement.findOneAndUpdate({_id:_id}, anuncioData, {
+        var image = '';
+        const userId = req.apiAuthUserId;
+        // Buscamos el anuncio por id y comprobamos que el anuncio pertenezca al userId que hace la petición
+        const advert = await Advertisement.findOne({ _id: _id });
+        //console.log('advert.userId', advert.userId ,'vs userId', userId)
+        if (advert.userId != userId) { // Ojo != (no funciona !==)
+            return res.status(403).json({ error: 'userId without authorization' });
+        }
+
+        const { name, desc, sale, price, tags, updatedAt } = req.body;
+        if (req.file) {
+            image = req.file.filename;
+        }
+        // Si la imagen no viene cargada, se entiende que la han borrado?????
+        const anuncioActualizado = await Advertisement.findOneAndUpdate(
+            { _id: _id },
+            {name, desc, sale, price, tags, updatedAt, image, userId},
+            {
              new: true, 
              useFindAndModify: false
          });
@@ -222,8 +242,19 @@ router.put('/:id', jwtAuth, async (req, res, next) =>{
  * DELETE /apiv1/advertisements: id (Elimina un anuncio dado su id)
  */
 router.delete('/:id', jwtAuth, async (req, res, next) => {
+
+    console.log(`El usuario que está haciendo la petición es ${req.apiAuthUserId}`);
+
     try {
         const _id = req.params.id;
+        const userId = req.apiAuthUserId;
+        // Buscamos el anuncio por id y comprobamos que el anuncio pertenezca 
+        // al userId que hace la petición para dejarle eliminar el anuncio.
+        const advert = await Advertisement.findOne({ _id: _id });
+        
+        if (advert.userId != userId) {  // Ojo != (no funciona !==)
+            return res.status(403).json({ error: 'userId without authorization' });
+        }
 
         //await Anuncio.remove({_id:_id}); para evitar el error de la consola deprecated
         await Advertisement.deleteOne({ _id: _id });

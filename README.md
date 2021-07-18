@@ -9,11 +9,38 @@ La ruta base http://localhost:3001/ se deberá modificar en el .env para que apu
 ### ROUTES API
 
 Las llamadas a la API se podrán realizar desde las siguientes rutas o routers:
-## PUBLIC ZONE 
-En la zona pública no es necesario agregar el token en la cabecera de las peticiones
+## ROUTES API USER (PUBLIC ZONE)
+
 ### USER REGISTER: http://localhost:3001/apiv1/auth/signup
 
 ### USER LOGIN: http://localhost:3001/apiv1/auth/signin
+### GET /users:  http://localhost:3001/users
+Listará todos los usuarios.
+### GET /users/:id => http://localhost:3001/users/:id de usuario
+Obtener un usuario por id
+### FORGOT PASSWORD:  http://localhost:3001/apiv1/auth/forgot-password'
+
+## ROUTES API USER (PRIVATE ZONE)
+Estas peticiones deben incluir el JWT (json web token) en la llamada a la URL de la petición.
+### CREATE NEW PASSWORD: http://localhost:3001/apiv1/auth/new-password
+
+### DELETE /users/:id 
+Elimina los datos del usuario id, además de todos los anuncios de dicho usuario.
+
+### PUT /users/addfavourite/:id (id de usuario)
+Url petición: http://localhost:3001/users/addfavourite/60f3e6b2631489df48ff8844
+
+Añade el anuncio en el array ads_favs (anuncios favoritos) de un usuario dado su id, en el body le pasamos el id del anuncio a añadir, tendrá que añadir el id del anuncio si no existe en el array de ids de anuncios favoritos.  
+ 
+### PUT /users/deletefavourite/:id (id de usuario)  
+
+Elimina un id de anuncio del array de ads_favs, en el body le pasamos el id del anuncio a eliminar.
+
+
+## ROUTES API ADVERTISEMENTS
+
+## PUBLIC ZONE 
+En la zona pública no es necesario agregar el token en la cabecera de las peticiones.
 ### GET ADVERTISEMENTS: /apiv1/advertisements
 
 Devuelve todos los anuncios definidos en la base de datos: http://localhost:3001/apiv1/advertisements
@@ -105,7 +132,7 @@ Un fichero en formato JSON que nos muestra los datos resultantes de realizar la 
 
 ## PRIVATE ZONE
 
-Todas las llamadas a la API de la zona privada necesitaran incorporar el token válido (token que no haya expirado) en la cabecera de la petición (Headers, campo o key: Authorization) para poder realizar la petición URL. Este token lo obtendremos en la llamada al User Login. 
+Todas las llamadas a la API de la zona privada necesitaran incorporar el token válido (token que no haya expirado) en la cabecera de la petición (Headers, campo key: Authorization, en value pondremos el token) para poder realizar la petición URL. Este token lo obtendremos en la llamada al User Login. 
 
 ### POST /apiv1/advertisements 
 
@@ -118,3 +145,16 @@ Seleccionamos el selector dónde le vamos a pasar la información, en este caso,
 Rellenamos los campos en el key de cada campo de nuestro esquema anuncio e insertamos en el value de cada campo el valor que queramos crear. 
 Y a continuación, pulsamos el botón SEND en la aplicación de Postman. Postman nos da la respuesta con un status 201 tal como hemos establecido en nuestra api, con lo que se ha creado el nuevo anuncio en la base de datos correctamente. 
 
+### PUT /apiv1/advertisements/:id de anuncio 
+
+Modificará un anuncio dado su id. Como en el POST, deberemos pasar en la cabecera el token de Authorization.
+Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
+
+URL ejemplo: http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f 
+
+### DELETE /apiv1/advertisements/: id 
+
+Elimina un anuncio dado su id de anuncio.
+Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
+
+URL ejemplo: http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f 

@@ -57,7 +57,7 @@ router.get('/', async function (req, res, next) {
 /**
  * PUT /users/:id (body)  
  * Actualizar un usuario, en el body le pasamos lo que queremos actualizar
- * (solo se deberá actualizar el username y/o el email)
+ * TODO: se podrá actualizar cualquiera de los datos, incluida la contraseña
  */
  router.put('/:id', jwtAuth, async (req, res, next) =>{
     try {
@@ -190,7 +190,7 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
         try {
             const { deletedCount } = await Advertisement.deleteMany({ userId: _id });
             console.log(
-                `\nEliminado${deletedCount > 1 ? 's' : ''} ${deletedCount} advertisements${deletedCount > 1 ? 's' : ''} del usuario.`);
+                `\nEliminado${deletedCount > 1 ? 's' : ''} ${deletedCount} advertisement${deletedCount > 1 ? 's' : ''} del usuario.`);
         }
         catch (error) {
             next(error);
