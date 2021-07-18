@@ -3,7 +3,7 @@
 const jwt = require('jsonwebtoken');
 const { token } = require('morgan');
 const jwtAuth = require('../lib/jwtAuth');
-const Usuario = require('../models/Usuario');
+const Usuario = require('../models/User');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
 const mailer = require('../lib/mailer');
 const nodemailer = require('nodemailer');
