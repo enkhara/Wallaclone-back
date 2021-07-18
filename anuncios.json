@@ -1,92 +1,118 @@
 [
-	{
-		"name": "Bicicleta",
-		"sale": true,
-		"price": 230.15,
-		"image": "bicicleta.jpg",
-		"tags": [
-			"lifestyle",
-			"motor"
-		], 
-        "sell": false, 
-        "reserved": false, 
-		"userId": "1"
-	},
-	{
-		"name": "iPhone 3GS",
-		"sale": false,
-		"price": 50.00,
-		"image": "movil.jpg",
-		"tags": [
-			"lifestyle",
-			"mobile"
-		], 
-        "sell": false, 
-        "reserved": false, 
-		"userId": "1"
-	},
-	{
-		"name": "Agendas",
-		"sale": true,
-		"price": 25,
-		"image": "agenda.jpg",
-		"tags": [
-			"work",
-			"lifestyle"
-		], 
-        "sell": false, 
-        "reserved": true, 
-		"userId": "2"
-	},
-	{
-		"name": "Applewatch",
-		"sale": true,
-		"price": 250.00,
-		"image": "applewatch.jpg",
-		"tags": [
-			"lifestyle",
-			"mobile"
-		], 
-        "sell": true, 
-        "reserved": false, 
-		"userId": "2"
-	},
-	{
-		"name": "Bicicleta niña",
-		"sale": true,
-		"price": 50,
-		"image": "bici-peque.jpg",
-		"tags": [
-			"motor",
-			"lifestyle"
-		], 
-        "sell": false, 
-        "reserved": false, 
-		"userId": "1"
-	},
-	{
-		"name": "Bowl",
-		"sale": true,
-		"price": 6.99,
-		"image": "bowl.jpg",
-		"tags": [
-			"lifestyle",
-			"kitchen"
-		], 
-        "sell": false, 
-        "reserved": false, 
-		"userId": "60eb19914d799d6a125a666a"
-	},
-	{
-		"name": "Cachorros Labrador",
-		"sale": false,
-		"price": 250,
-		"image": "cachorros.jpg",
-		"tags": [
-			"lifestyle"
-		], 
-        "sell": false, 
-        "reserved": false, 
-		"userId": "60eb19914d799d6a125a666a"
-	}
+   {
+        "tags": [
+            "work",
+            "lifestyle"
+        ],
+        "name": "Agendas",
+        "desc": "Vendo 2 agendas del año 2021, son de distinto tamaño (10 x 15) y (20 x 25)",
+        "sale": true,
+        "price": 25,
+        "image": "agenda.jpg",
+        "sell": false,
+        "reserved": true,
+        "userId": "60eb19914d799d6a125a666a",
+        "updatedAt": "2021-07-10T10:04:47.913Z"
+    },
+    {
+        "tags": [
+            "lifestyle",
+            "mobile"
+        ],
+        "name": "Applewatch",
+        "desc": "Vendo applewatch en buen estado",
+        "sale": true,
+        "price": 250,
+        "image": "applewatch.jpg",
+        "sell": true,
+        "reserved": false,
+        "userId": "60eb19914d799d6a125a666a", 
+        "updatedAt": "2021-06-03T10:04:47.913Z"
+    },
+    {
+        "tags": [
+            "motor",
+            "lifestyle"
+        ],
+        "name": "Bicicleta niña",
+        "desc": "se busca bicicleta pequeña para una niña de 7 años",
+        "sale": true,
+        "price": 50,
+        "image": "bici-peque.jpg",
+        "sell": false,
+        "reserved": false,
+        "userId": "60eb19914d799d6a125a666a", 
+        "updatedAt": "2021-05-25T10:04:47.913Z"
+    },
+    {
+        "tags": [
+            "lifestyle",
+            "kitchen"
+        ],
+        "name": "Bowl",
+        "desc": "vendo bowl negro decorativo",
+        "sale": true,
+        "price": 6.99,
+        "image": "bowl.jpg",
+        "sell": false,
+        "reserved": false,
+        "userId": "60eb19914d799d6a125a666a", 
+        "updatedAt": "2021-06-01T10:04:47.913Z"
+    },
+    {
+        "tags": [
+            "lifestyle"
+        ],
+        "name": "Cachorros Labrador",
+        "desc": "Necesito encontrar dos cachorros de raza labrador para reponer pérdida de una persona",
+        "sale": false,
+        "price": 250,
+        "image": "cachorros.jpg",
+        "sell": false,
+        "reserved": false,
+        "userId": "60eb19914d799d6a125a666a", 
+        "updatedAt": "2021-03-20T10:04:47.913Z"
+    },
+    {
+        "tags": [
+            "motor"
+        ],
+        "name": "bicicleta nueva",
+        "desc": "Se vende bicicleta a muy buen precio",
+        "sale": true,
+        "price": 250,
+        "image": "bicicleta.jpg",
+        "userId": "60f3e6b2631489df48ff8844",
+        "reserved": false,
+        "sell": false,
+        "updatedAt": "2021-07-18T10:04:47.913Z"
+    },
+    {
+        "tags": [
+            "motor"
+        ],
+        "name": "Bicicleta adulto",
+        "desc": "se busca bicicleta de paseo en buen estado",
+        "sale": false,
+        "price": 350,
+        "image": "bicicleta.jpg",
+        "userId": "60f3e6b2631489df48ff8844",
+        "reserved": false,
+        "sell": false,
+        "updatedAt": "2021-07-18T15:37:22.952Z"
+    },
+    {
+        "tags": [
+            "lifestyle, mobile"
+        ],
+        "name": "iPhone 3GS",
+        "desc": "Busco móvil 3G por unos 350 euros",
+        "sale": false,
+        "price": 350,
+        "image": "movil.jpg",
+        "userId": "60f3e6b2631489df48ff8844",
+        "reserved": false,
+        "sell": false,
+        "updatedAt": "2021-07-18T15:42:03.507Z"
+    }
 ]

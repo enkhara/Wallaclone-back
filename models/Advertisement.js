@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 // es opcional añadir la colección
 // Al poner la opción de index:true creamos indice para el campo de la colección
 const advertisementSchema = mongoose.Schema({
-    name: {type:String, index:true}, 
+    name: { type: String, index: true },
+    desc: { type: String, index: true },
     sale:  {type:Boolean, index:true},
     price: {type:Number, index:true}, 
     image: String,
@@ -14,7 +15,7 @@ const advertisementSchema = mongoose.Schema({
     updatedAt: { type: Date },
     reserved: { type: Boolean },
     sell: { type: Boolean },
-    userId: {type:String, index:true}
+    userId: {type:mongoose.Schema.Types.ObjectId, ref: 'user', index:true}
 }
 , {
     collection: 'advertisements'  // para evitar la pluralizacion, le indicamos que colección va a usar
@@ -38,6 +39,11 @@ advertisementSchema.methods.crear = function() {
     this.updatedAt = Date.now();
     this.sell = false;
     this.reserved = false;
+    return this.save();
+}
+
+advertisementSchema.methods.actualizar = function() {
+    this.updatedAt = Date.now();
     return this.save();
 }
 
