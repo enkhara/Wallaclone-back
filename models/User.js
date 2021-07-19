@@ -4,12 +4,18 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
-//const { getMaxListeners } = require('./Anuncio');
 
 const usuarioSchema = mongoose.Schema({
   username: { type: String, unique: true, index: true },
   email: { type: String, unique: true, index: true },
   password: String,
+  ads_favs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'advertisement'
+  }]
+},
+ {
+  collection: 'users'  
 });
 
 usuarioSchema.statics.hashPassword = function (passwordEnClaro) {
