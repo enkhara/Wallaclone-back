@@ -41,6 +41,8 @@ Elimina un id de anuncio del array de ads_favs, en el body le pasamos el id del 
 
 ## PUBLIC ZONE 
 En la zona pública no es necesario agregar el token en la cabecera de las peticiones.
+### GET TAGS: /apiv1/tags
+Muestra los distintos tags definidos, la Url: http://localhost:3001/apiv1/tags
 ### GET ADVERTISEMENTS: /apiv1/advertisements
 
 Devuelve todos los anuncios definidos en la base de datos: http://localhost:3001/apiv1/advertisements

@@ -91,6 +91,12 @@ advertisementSchema.statics.lista = async function (
 	return query.exec(); // devuelve una promesa
 };
 
+// Método para listar los distintos tags definidos
+advertisementSchema.statics.listaTags = function() {
+    const query = Advertisement.find().distinct("tags");
+    return query.exec();
+};
+
 advertisementSchema.statics.allowedTags = function () {
 	return ['work', 'lifestyle', 'motor', 'mobile'];
 };

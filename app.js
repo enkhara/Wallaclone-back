@@ -41,6 +41,7 @@ app.post('/apiv1/auth/signup', loginController.post);
 app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
 app.put('/apiv1/auth/new-password', jwtAuth, loginController.createNewPassword);
 app.use('/apiv1/advertisements', require('./routes/api/advertisements'));
+app.use('/apiv1/tags', require('./routes/api/tags'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
