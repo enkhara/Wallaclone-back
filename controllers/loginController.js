@@ -79,7 +79,7 @@ class LoginController {
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '2h',
       });
-      verificationLinks = `${authPath}/id=${user._id}/token=${token}`;
+      verificationLinks = `${authPath}/new-password/id=${user._id}/token=${token}`;
       const message = await mailer(email, 'Forgot Password', verificationLinks);
       const transporter = await emailTransportConfigure();
 
