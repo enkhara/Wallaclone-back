@@ -1,25 +1,27 @@
 'use strict';
 
 const mongoose = require('mongoose');
-
+const { query } = require('express');
 // definimos un esquema, le pasamos un objecto
 // es opcional añadir la colección
 // Al poner la opción de index:true creamos indice para el campo de la colección
-const advertisementSchema = mongoose.Schema({
-    name: { type: String, index: true },
-    desc: { type: String, index: true },
-    sale:  {type:Boolean, index:true},
-    price: {type:Number, index:true}, 
-    image: String,
-    tags: [{type:String, index:true}], 
-    updatedAt: { type: Date },
-    reserved: { type: Boolean },
-    sell: { type: Boolean },
-    userId: {type:mongoose.Schema.Types.ObjectId, ref: 'user', index:true}
-}
-, {
-    collection: 'advertisements'  // para evitar la pluralizacion, le indicamos que colección va a usar
-});
+const advertisementSchema = mongoose.Schema(
+	{
+		name: { type: String, index: true },
+		desc: { type: String, index: true },
+		sale: { type: Boolean, index: true },
+		price: { type: Number, index: true },
+		image: String,
+		tags: [{ type: String, index: true }],
+		updatedAt: { type: Date },
+		reserved: { type: Boolean },
+		sell: { type: Boolean },
+		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', index: true },
+	},
+	{
+		collection: 'advertisements', // para evitar la pluralizacion, le indicamos que colección va a usar
+	}
+);
 
 // Indice por texto
 //anuncioSchema.Index( { nombre: 'text'} );
@@ -42,10 +44,10 @@ advertisementSchema.methods.crear = function () {
 	return this.save();
 };
 
-advertisementSchema.methods.actualizar = function() {
-    this.updatedAt = Date.now();
-    return this.save();
-}
+advertisementSchema.methods.actualizar = function () {
+	this.updatedAt = Date.now();
+	return this.save();
+};
 
 // Marcamos el anuncio como vendido
 advertisementSchema.methods.vender = function () {
@@ -89,11 +91,16 @@ advertisementSchema.statics.lista = async function (
 	return query.exec(); // devuelve una promesa
 };
 
-// Método para listar los distintos tags definidos
-advertisementSchema.statics.listaTags = function () {
-	const query = Advertisement.find().distinct('tags');
-	return query.exec();
+advertisementSchema.statics.allowedTags = function () {
+	return ['work', 'lifestyle', 'motor', 'mobile'];
 };
+
+/*
+advertisementSchema.methods.sold = function() {
+    this.sale = true;
+    return this.save();
+}
+*/
 
 // creamos el modelo con el esquema definido
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
