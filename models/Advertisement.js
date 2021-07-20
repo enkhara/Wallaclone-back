@@ -9,7 +9,7 @@ const advertisementSchema = mongoose.Schema(
 	{
 		name: { type: String, index: true },
 		desc: { type: String, index: true },
-		sale: { type: Boolean, index: true },
+		transaction: { type: String, index: true },
 		price: { type: Number, index: true },
 		image: String,
 		tags: [{ type: String, index: true }],
@@ -61,6 +61,13 @@ advertisementSchema.methods.no_Vender = function () {
 	return this.save();
 };
 
+/*
+advertisementSchema.methods.sold = function() {
+    this.sale = true;
+    return this.save();
+}
+*/
+
 // Marcamos el anuncio como reservado
 advertisementSchema.methods.reservar = function () {
 	this.reserved = true;
@@ -92,24 +99,16 @@ advertisementSchema.statics.lista = async function (
 };
 
 // Método para listar los distintos tags definidos
-advertisementSchema.statics.listaTags = function() {
-    const query = Advertisement.find().distinct("tags");
-    return query.exec();
+advertisementSchema.statics.listaTags = function () {
+	const query = Advertisement.find().distinct('tags');
+	return query.exec();
 };
 
 advertisementSchema.statics.allowedTags = function () {
-	return ['work', 'lifestyle', 'motor', 'mobile'];
+	return ['work', 'kitchen', 'lifestyle', 'motor', 'mobile'];
 };
-
-/*
-advertisementSchema.methods.sold = function() {
-    this.sale = true;
-    return this.save();
-}
-*/
 
 // creamos el modelo con el esquema definido
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
-//exportamos el modelo (opcional)
 module.exports = Advertisement;
