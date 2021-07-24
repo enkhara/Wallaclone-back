@@ -36,7 +36,7 @@ class LoginController {
   async postJWT(req, res, next) {
     try {
       const { username, password } = req.body;
-      
+
       const usuario = await User.findOne({ username });
 
       if (!usuario || !(await usuario.comparePassword(password))) {
@@ -46,7 +46,11 @@ class LoginController {
         return;
       }
 
-      jwt.sign( { _id: usuario._id }, process.env.JWT_SECRET, { expiresIn: '2h' }, (err, jwtToken) => {
+      jwt.sign(
+        { _id: usuario._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '2h' },
+        (err, jwtToken) => {
           if (err) {
             next(err);
             return;
@@ -73,7 +77,7 @@ class LoginController {
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '2h',
       });
-      verificationLinks = `${authPath}/new-password/id=${user._id}/token=${token}`;
+      verificationLinks = `${authPath}/new-password/${user._id}/${token}`;
       const message = await mailer(email, 'Forgot Password', verificationLinks);
       const transporter = await emailTransportConfigure();
 
@@ -95,14 +99,14 @@ class LoginController {
   }
 
   async createNewPassword(req, res, next) {
-    const { newPassword, _id } = req.body;
+    const { newPassword, id } = req.body;
 
-    if (!(newPassword && _id)) {
+    if (!(newPassword && id)) {
       res.status(400).json({ message: 'requires fields' });
     }
 
     try {
-      const user = await User.findOne({ _id });
+      const user = await User.findOne({ id });
 
       const newPasswordCription = await User.hashPassword(newPassword);
 
