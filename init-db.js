@@ -2,9 +2,8 @@
 
 require('dotenv').config();
 
-const mongoose = require('./models/connectMongoose');
-const User = require('./models/User');
-const Advertisement = require('./models/Advertisement');
+const { mongoose, connectMongoose, User, Advertisement } = require('./models');
+// const mongoose = require('./models/connectMongoose');
 const anunciosData = require('./anuncios.json');
 
 main().catch((err) => console.error(err));
@@ -18,7 +17,7 @@ async function main() {
 		console.log('Error en init-db de anuncios a la base de datos: ', err);
 	});
 
-	mongoose.close(function () {
+	mongoose.connection.close(function () {
 		console.log('Desconectada db');
 	});
 }
@@ -34,7 +33,6 @@ async function initUsersDB() {
 			email: 'admin@example.com',
 			password: await User.hashPassword('1234'),
 		},
-
 		{
 			username: 'amolto',
 			email: 'amoltovil@gmail.com',

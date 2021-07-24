@@ -10,6 +10,7 @@ const loginController = require('./controllers/loginController');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var mailsRouter = require('./routes/mail');
+var advertsRouter = require('./routes/api/advertisements');
 
 var app = express();
 
@@ -40,7 +41,8 @@ app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
 app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
 app.put('/apiv1/auth/new-password', jwtAuth, loginController.createNewPassword);
-app.use('/apiv1/advertisements', require('./routes/api/advertisements'));
+app.post('/apiv1/advertisements', jwtAuth, advertsRouter);
+app.use('/apiv1/advertisements', advertsRouter);
 app.use('/apiv1/tags', require('./routes/api/tags'));
 
 // catch 404 and forward to error handler

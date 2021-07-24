@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const User = require('../models/User');
-const Advertisement = require('../models/Advertisement');
+//const User = require('../models/User');
+//const Advertisement = require('../models/Advertisement');
+const { User, Advertisement } = require('../models'); 
 const jwtAuth = require('../lib/jwtAuth');
 
 /* GET /users listing. */

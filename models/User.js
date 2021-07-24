@@ -5,30 +5,31 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
 
-const usuarioSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
   username: { type: String, unique: true, index: true },
   email: { type: String, unique: true, index: true },
-  password: String,
+  password: String,   
   ads_favs: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'advertisement'
-  }]
+     type: mongoose.Schema.Types.ObjectId,
+     ref: 'Advertisement'
+   }]
 },
  {
   collection: 'users'  
 });
 
-usuarioSchema.statics.hashPassword = function (passwordEnClaro) {
+userSchema.statics.hashPassword = function (passwordEnClaro) {
   return bcrypt.hash(passwordEnClaro, 7);
 };
 
-usuarioSchema.methods.comparePassword = function (passwordEnClaro) {
+// Método de Instancia
+userSchema.methods.comparePassword = function (passwordEnClaro) {
   return bcrypt.compare(passwordEnClaro, this.password);
 };
 
 // En los métodos de mongoose no usar Arrow Functions para no tener problemas con el this
 // es un método que no está dentro de mongoose
-usuarioSchema.statics.lista = async function (filtro, limit, skip, fields, sort){
+userSchema.statics.lista = async function (filtro, limit, skip, fields, sort){
     const query = User.find(filtro); // no devuelve una promesa, devuelve una query que tiene un método then
     query.limit(limit);
     query.skip(skip);
@@ -39,6 +40,6 @@ usuarioSchema.statics.lista = async function (filtro, limit, skip, fields, sort)
     
 };
 
-const User = mongoose.model('Usuario', usuarioSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

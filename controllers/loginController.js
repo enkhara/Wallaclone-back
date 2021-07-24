@@ -1,21 +1,19 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
-const { token } = require('morgan');
-const jwtAuth = require('../lib/jwtAuth');
-const Usuario = require('../models/User');
+const { User } = require('../models');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
 const mailer = require('../lib/mailer');
 const nodemailer = require('nodemailer');
 
 class LoginController {
   /**
-   * POST /auth/signup
+   * POST /auth/signup (User Register)
    */
   post(req, res, next) {
     const { username, email, password } = req.body;
-    Usuario.hashPassword(password).then((hash) => {
-      Usuario.create({
+    User.hashPassword(password).then((hash) => {
+      User.create({
         username: username,
         email: email,
         password: hash,
@@ -33,26 +31,22 @@ class LoginController {
   }
 
   /**
-   * POST /auth/signin
+   * POST /auth/signin (User login)
    */
   async postJWT(req, res, next) {
     try {
       const { username, password } = req.body;
-
-      const usuario = await Usuario.findOne({ username });
+      
+      const usuario = await User.findOne({ username });
 
       if (!usuario || !(await usuario.comparePassword(password))) {
-        const error = new Error('invalid credentials');
+        const error = new Error('Invalid credentials');
         error.status = 401;
         next(error);
         return;
       }
 
-      jwt.sign(
-        { _id: usuario._id },
-        process.env.JWT_SECRET,
-        { expiresIn: '2h' },
-        (err, jwtToken) => {
+      jwt.sign( { _id: usuario._id }, process.env.JWT_SECRET, { expiresIn: '2h' }, (err, jwtToken) => {
           if (err) {
             next(err);
             return;
@@ -75,7 +69,7 @@ class LoginController {
     let emailStatus = 'ok';
 
     try {
-      const user = await Usuario.findOne({ email });
+      const user = await User.findOne({ email });
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '2h',
       });
@@ -108,11 +102,11 @@ class LoginController {
     }
 
     try {
-      const user = await Usuario.findOne({ _id });
+      const user = await User.findOne({ _id });
 
-      const newPasswordCription = await Usuario.hashPassword(newPassword);
+      const newPasswordCription = await User.hashPassword(newPassword);
 
-      await Usuario.updateOne(user, { password: newPasswordCription });
+      await User.updateOne(user, { password: newPasswordCription });
     } catch (error) {
       return res.status(400).json({ message: 'Somenthing goes wrong !' });
     }

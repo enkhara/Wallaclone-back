@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const path = require('path');
-const Advertisement = require('../../models/Advertisement'); // cargamos el modelo
+const { Advertisement, User } = require('../../models'); // cargamos los modelos
 const jwtAuth = require('../../lib/jwtAuth');
 const multer = require('multer');
 
@@ -34,7 +34,7 @@ router.get('/', async function (req, res, next) {
 
 		const name = req.query.name;
 		const desc = req.query.desc;
-		const sale = req.query.sale;
+		const transaction = req.query.transaction;
 		const price = req.query.price;
 		const tags = req.query.tags;
 		const sell = req.query.sell;
@@ -57,8 +57,8 @@ router.get('/', async function (req, res, next) {
 		if (desc) {
 			filtro.desc = new RegExp('^' + desc, 'i');
 		}
-		if (sale) {
-			filtro.sale = sale;
+		if (transaction) {
+			filtro.transaction = transaction;
 		}
 		if (sell) {
 			filtro.sell = sell;
@@ -118,6 +118,7 @@ router.get('/', async function (req, res, next) {
 			fields,
 			sort
 		);
+		
 		res.json(resultado);
 	} catch (err) {
 		next(err);
@@ -125,13 +126,14 @@ router.get('/', async function (req, res, next) {
 });
 
 /**
- * GET /apiv1/advertisements:id (Obtener un anuncio por id)
+ * GET /apiv1/advertisements:id (Obtener un anuncio por su id)
+ * Además se trae los datos del usuario id propietario con populate
  */
 router.get('/:id', async (req, res, next) => {
 	try {
 		const _id = req.params.id;
 
-		const advert = await Advertisement.findOne({ _id: _id });
+		const advert = await Advertisement.findOne({ _id: _id }).populate({ path: 'userId'});
 
 		if (!advert) {
 			return res.status(404).json({ error: 'not found' });
@@ -183,11 +185,11 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 	console.log(
 		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
 	);
-
+	
 	try {
 		var image = '';
 		var userId = req.apiAuthUserId;
-		const { name, desc, sale, price, tags, updatedAt } = req.body;
+		const { name, desc, transaction, price, tags, updatedAt } = req.body;
 		if (req.file) {
 			image = req.file.filename;
 		}
@@ -198,7 +200,7 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 		const anuncio = new Advertisement({
 			name,
 			desc,
-			sale,
+			transaction,
 			price,
 			tags,
 			updatedAt,
@@ -240,14 +242,14 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 			return res.status(403).json({ error: 'userId without authorization' });
 		}
 
-		const { name, desc, sale, price, tags, updatedAt } = req.body;
+		const { name, desc, transaction, price, tags, updatedAt } = req.body;
 		if (req.file) {
 			image = req.file.filename;
 		}
 		// Si la imagen no viene cargada, se entiende que la han borrado?????
 		const anuncioActualizado = await Advertisement.findOneAndUpdate(
 			{ _id: _id },
-			{ name, desc, sale, price, tags, updatedAt, image, userId },
+			{ name, desc, transaction, price, tags, updatedAt, image, userId },
 			{
 				new: true,
 				useFindAndModify: false,
