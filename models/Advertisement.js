@@ -82,13 +82,25 @@ advertisementSchema.statics.lista = async function (
 	fields,
 	sort
 ) {
+	// Para que la paginación funcione 
+	// siempre se debe aplicar el salto (skip) antes del limite, el limite es el tamaño de la página
 	const query = Advertisement.find(filtro).populate({ path: 'userId' }); // no devuelve una promesa, devuelve una query que tiene un método then
 		//, model: User});
 		//.populate('userId'); 
-	query.skip(skip);
+	query.skip(skip); 
 	query.limit(limit);
 	query.select(fields);
 	query.sort(sort);
+
+	// const result = {};
+	// if (includeTotal) {
+	// 	result.total = await Advertisement.countDocuments();
+	// 	console.log('Total documentos', result.total);
+	// }
+	// result.rows = await query.exec();
+
+	// if (cb) return cb(null, result);
+	// return result;
 
 	return query.exec(); // devuelve una promesa
 };

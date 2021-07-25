@@ -32,11 +32,13 @@ async function initUsersDB() {
 			username: 'admin',
 			email: 'admin@example.com',
 			password: await User.hashPassword('1234'),
+			_id:"60eb19914d799d6a125a666a",
 		},
 		{
 			username: 'amolto',
 			email: 'amoltovil@gmail.com',
 			password: await User.hashPassword('4321'),
+			_id:"60f3e6b2631489df48ff8844",
 		},
 	]);
 	console.log(

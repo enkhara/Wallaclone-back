@@ -78,10 +78,10 @@ Un fichero en formato JSON que nos muestra los datos resultantes de realizar la 
 
     **3. Lista de anuncios por tipo de anuncio (Venta ó Búsqueda)**
 
-        http://localhost:3001/apiv1/advertisements?sale=false
+        http://localhost:3001/apiv1/advertisements?transaction=wanted
         Obtiene los anuncios de tipo Se Busca
 
-        http://localhost:3001/apiv1/advertisements?sale=true
+        http://localhost:3001/apiv1/advertisements?transaction=sale
         Obtiene los anuncios de tipo Se Vende
 
     **4. Lista de anuncios por rango de precios**

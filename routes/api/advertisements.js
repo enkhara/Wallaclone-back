@@ -4,12 +4,14 @@ const path = require('path');
 const { Advertisement, User } = require('../../models'); // cargamos los modelos
 const jwtAuth = require('../../lib/jwtAuth');
 const multer = require('multer');
+const UPLOAD_FOLDER = process.env.UPLOAD_FOLDER || 'public';
 
 //const cote = require('cote');
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, path.join(__dirname, '../../public/images/adverts/'));
+		//cb(null, UPLOAD_FOLDER);
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname);
@@ -37,19 +39,20 @@ router.get('/', async function (req, res, next) {
 		const transaction = req.query.transaction;
 		const price = req.query.price;
 		const tags = req.query.tags;
-		const sell = req.query.sell;
+		const sold = req.query.sold;
 		const reserved = req.query.reserved;
 		// http://localhost:3001/apiv1/advertisements/?userId=60eb19914d799d6a125a6669
 		const userId = req.query.userId;
-
+		
 		const limit = parseInt(req.query.limit); //lo convierte a num porque todo en req es string
 		const skip = parseInt(req.query.skip); // para paginar skip
+		
 		const fields = req.query.fields;
 		//http://localhost:3001/apiv1/advertisements//?fields=precio%20nombre%20-_id
 		const sort = req.query.sort;
 		//http://localhost:3001/apiv1/advertisements/?sort=precio%20-nombre
 		// ordena por precio ascendente y nombre descendente
-
+		
 		const filtro = {};
 		if (name) {
 			filtro.name = new RegExp('^' + name, 'i');
@@ -60,8 +63,8 @@ router.get('/', async function (req, res, next) {
 		if (transaction) {
 			filtro.transaction = transaction;
 		}
-		if (sell) {
-			filtro.sell = sell;
+		if (sold) {
+			filtro.sold = sold;
 		}
 		if (reserved) {
 			filtro.reserved = reserved;
@@ -116,7 +119,7 @@ router.get('/', async function (req, res, next) {
 			limit,
 			skip,
 			fields,
-			sort
+			sort	
 		);
 		
 		res.json(resultado);
