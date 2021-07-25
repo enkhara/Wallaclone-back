@@ -7,117 +7,115 @@ const mailer = require('../lib/mailer');
 const nodemailer = require('nodemailer');
 
 class LoginController {
+	/**
+	 * POST /auth/signup (User Register)
+	 */
+	post(req, res, next) {
+		const { username, email, password } = req.body;
+		User.hashPassword(password).then((hash) => {
+			User.create({
+				username: username,
+				email: email,
+				password: hash,
+			})
+				.then(() => {
+					res.json('USER REGISTERED');
+				})
+				.catch((error) => {
+					if (error) {
+						res.status(400).json({ error: error });
+						console.log(error);
+					}
+				});
+		});
+	}
 
-  /**
-   * POST /auth/signup (User Register)
-   */
-  post(req, res, next) {
-    const { username, email, password } = req.body;
-    User.hashPassword(password).then((hash) => {
-      User.create({
-        username: username,
-        email: email,
-        password: hash,
-      })
-        .then(() => {
-          res.json('USER REGISTERED');
-        })
-        .catch((error) => {
-          if (error) {
-            res.status(400).json({ error: error });
-            console.log(error);
-          }
-        });
-    });
-  }
+	/**
+	 * POST /auth/signin (User login)
+	 */
+	async postJWT(req, res, next) {
+		try {
+			const { username, password } = req.body;
 
-  /**
-   * POST /auth/signin (User login)
-   */
-  async postJWT(req, res, next) {
-    try {
-      const { username, password } = req.body;
+			const usuario = await User.findOne({ username });
 
-      const usuario = await User.findOne({ username });
+			if (!usuario || !(await usuario.comparePassword(password))) {
+				const error = new Error('Invalid credentials');
+				error.status = 401;
+				next(error);
+				return;
+			}
 
-      if (!usuario || !(await usuario.comparePassword(password))) {
-        const error = new Error('Invalid credentials');
-        error.status = 401;
-        next(error);
-        return;
-      }
+			jwt.sign(
+				{ _id: usuario._id },
+				process.env.JWT_SECRET,
+				{ expiresIn: '2h' },
+				(err, jwtToken) => {
+					if (err) {
+						next(err);
+						return;
+					}
+					res.json({ token: jwtToken });
+				}
+			);
+		} catch (err) {
+			next(err);
+		}
+	}
 
-      jwt.sign(
-        { _id: usuario._id },
-        process.env.JWT_SECRET,
-        { expiresIn: '2h' },
-        (err, jwtToken) => {
-          if (err) {
-            next(err);
-            return;
-          }
-          res.json({ token: jwtToken });
-        }
-      );
-    } catch (err) {
-      next(err);
-    }
-  }
+	async forgotPassword(req, res, next) {
+		const { email } = req.body;
+		const message = 'check your email link to reset your password';
 
-  async forgotPassword(req, res, next) {
-    const { email } = req.body;
-    const message = 'check your email link to reset your password';
+		const authPath = process.env.LOCAL_HOST_WEB_NEW_PASSWORD;
 
-    const authPath = process.env.LOCAL_HOST_WEB_NEW_PASSWORD;
+		let verificationLinks;
+		let emailStatus = 'ok';
 
-    let verificationLinks;
-    let emailStatus = 'ok';
+		try {
+			const user = await User.findOne({ email });
+			const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+				expiresIn: '2h',
+			});
+			verificationLinks = `${authPath}/new-password/${user._id}/${token}`;
+			const message = await mailer(email, 'Forgot Password', verificationLinks);
+			const transporter = await emailTransportConfigure();
 
-    try {
-      const user = await User.findOne({ email });
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '2h',
-      });
-      verificationLinks = `${authPath}/new-password/${user._id}/${token}`;
-      const message = await mailer(email, 'Forgot Password', verificationLinks);
-      const transporter = await emailTransportConfigure();
+			transporter.sendMail(message, (err, info) => {
+				if (err) {
+					console.log('Error occurred. ' + err.message);
+					return process.exit(1);
+				}
+				console.log('Message sent: %s', info.messageId);
+				console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+			});
+		} catch (error) {
+			console.log(error);
 
-      transporter.sendMail(message, (err, info) => {
-        if (err) {
-          console.log('Error occurred. ' + err.message);
-          return process.exit(1);
-        }
-        console.log('Message sent: %s', info.messageId);
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-      });
-    } catch (error) {
-      console.log(error);
+			return res.status(400).json({ message: 'Somenthing goes wrong !' });
+		}
 
-      return res.status(400).json({ message: 'Somenthing goes wrong !' });
-    }
+		res.json({ message, info: emailStatus, test: verificationLinks });
+	}
 
-    res.json({ message, info: emailStatus, test: verificationLinks });
-  }
+	async createNewPassword(req, res, next) {
+		const { newPassword, id } = req.body;
 
-  async createNewPassword(req, res, next) {
-    const { newPassword, id } = req.body;
+		if (!(newPassword && id)) {
+			res.status(400).json({ message: 'requires fields' });
+		}
 
-    if (!(newPassword && id)) {
-      res.status(400).json({ message: 'requires fields' });
-    }
+		try {
+			const user = await User.findOne({ id });
 
-    try {
-      const user = await User.findOne({ id });
+			const newPasswordCription = await User.hashPassword(newPassword);
 
-      const newPasswordCription = await User.hashPassword(newPassword);
-
-      await User.updateOne(user, { password: newPasswordCription });
-    } catch (error) {
-      return res.status(400).json({ message: 'Somenthing goes wrong !' });
-    }
-    res.json({ message: 'update ' });
-  }
->>>>>>> 44319f286f87abbf03a175e384ca4aeca9a4a812
+			await User.updateOne(user, { password: newPasswordCription });
+		} catch (error) {
+			return res.status(400).json({ message: 'Somenthing goes wrong !' });
+		}
+		res.json({ message: 'update ' });
+	}
 }
 
 module.exports = new LoginController();
