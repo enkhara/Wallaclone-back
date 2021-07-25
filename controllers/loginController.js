@@ -1,124 +1,123 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
-const { token } = require('morgan');
-const jwtAuth = require('../lib/jwtAuth');
-const Usuario = require('../models/User');
+const { User } = require('../models');
 const emailTransportConfigure = require('../lib/emailTransportConfigure');
 const mailer = require('../lib/mailer');
 const nodemailer = require('nodemailer');
 
 class LoginController {
-	/**
-	 * POST /auth/signup
-	 */
-	post(req, res, next) {
-		const { username, email, password } = req.body;
-		Usuario.hashPassword(password).then((hash) => {
-			Usuario.create({
-				username: username,
-				email: email,
-				password: hash,
-			})
-				.then(() => {
-					res.json('USER REGISTERED');
-				})
-				.catch((error) => {
-					if (error) {
-						res.status(400).json({ error: error });
-						console.log(error);
-					}
-				});
-		});
-	}
 
-	/**
-	 * POST /auth/signin
-	 */
-	async postJWT(req, res, next) {
-		try {
-			const { username, password } = req.body;
+  /**
+   * POST /auth/signup (User Register)
+   */
+  post(req, res, next) {
+    const { username, email, password } = req.body;
+    User.hashPassword(password).then((hash) => {
+      User.create({
+        username: username,
+        email: email,
+        password: hash,
+      })
+        .then(() => {
+          res.json('USER REGISTERED');
+        })
+        .catch((error) => {
+          if (error) {
+            res.status(400).json({ error: error });
+            console.log(error);
+          }
+        });
+    });
+  }
 
-			const usuario = await Usuario.findOne({ username });
+  /**
+   * POST /auth/signin (User login)
+   */
+  async postJWT(req, res, next) {
+    try {
+      const { username, password } = req.body;
 
-			if (!usuario || !(await usuario.comparePassword(password))) {
-				const error = new Error('invalid credentials');
-				error.status = 401;
-				next(error);
-				return;
-			}
+      const usuario = await User.findOne({ username });
 
-			jwt.sign(
-				{ _id: usuario._id },
-				process.env.JWT_SECRET,
-				{ expiresIn: '2h' },
-				(err, jwtToken) => {
-					if (err) {
-						next(err);
-						return;
-					}
-					res.json({ token: jwtToken });
-					console.log(`tokenBack ${jwtToken}`);
-				}
-			);
-		} catch (err) {
-			next(err);
-		}
-	}
+      if (!usuario || !(await usuario.comparePassword(password))) {
+        const error = new Error('Invalid credentials');
+        error.status = 401;
+        next(error);
+        return;
+      }
 
-	async forgotPassword(req, res, next) {
-		const { email } = req.body;
-		const message = 'check your email link to reset your password';
+      jwt.sign(
+        { _id: usuario._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '2h' },
+        (err, jwtToken) => {
+          if (err) {
+            next(err);
+            return;
+          }
+          res.json({ token: jwtToken });
+        }
+      );
+    } catch (err) {
+      next(err);
+    }
+  }
 
-		const authPath = process.env.LOCAL_HOST_WEB_NEW_PASSWORD;
+  async forgotPassword(req, res, next) {
+    const { email } = req.body;
+    const message = 'check your email link to reset your password';
 
-		let verificationLinks;
-		let emailStatus = 'ok';
+    const authPath = process.env.LOCAL_HOST_WEB_NEW_PASSWORD;
 
-		try {
-			const user = await Usuario.findOne({ email });
-			const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-				expiresIn: '2h',
-			});
-			verificationLinks = `${authPath}/new-password/id=${user._id}/token=${token}`;
-			const message = await mailer(email, 'Forgot Password', verificationLinks);
-			const transporter = await emailTransportConfigure();
+    let verificationLinks;
+    let emailStatus = 'ok';
 
-			transporter.sendMail(message, (err, info) => {
-				if (err) {
-					console.log('Error occurred. ' + err.message);
-					return process.exit(1);
-				}
-				console.log('Message sent: %s', info.messageId);
-				console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-			});
-		} catch (error) {
-			console.log(error);
+    try {
+      const user = await User.findOne({ email });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: '2h',
+      });
+      verificationLinks = `${authPath}/new-password/${user._id}/${token}`;
+      const message = await mailer(email, 'Forgot Password', verificationLinks);
+      const transporter = await emailTransportConfigure();
 
-			return res.status(400).json({ message: 'Somenthing goes wrong !' });
-		}
+      transporter.sendMail(message, (err, info) => {
+        if (err) {
+          console.log('Error occurred. ' + err.message);
+          return process.exit(1);
+        }
+        console.log('Message sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      });
+    } catch (error) {
+      console.log(error);
 
-		res.json({ message, info: emailStatus, test: verificationLinks });
-	}
+      return res.status(400).json({ message: 'Somenthing goes wrong !' });
+    }
 
-	async createNewPassword(req, res, next) {
-		const { newPassword, _id } = req.body;
+    res.json({ message, info: emailStatus, test: verificationLinks });
+  }
 
-		if (!(newPassword && _id)) {
-			res.status(400).json({ message: 'requires fields' });
-		}
+  async createNewPassword(req, res, next) {
+    const { newPassword, id } = req.body;
 
-		try {
-			const user = await Usuario.findOne({ _id });
+    if (!(newPassword && id)) {
+      res.status(400).json({ message: 'requires fields' });
+    }
 
-			const newPasswordCription = await Usuario.hashPassword(newPassword);
+    try {
+      const user = await User.findOne({ id });
 
-			await Usuario.updateOne(user, { password: newPasswordCription });
-		} catch (error) {
-			return res.status(400).json({ message: 'Somenthing goes wrong !' });
-		}
-		res.json({ message: 'update ' });
-	}
+      const newPasswordCription = await User.hashPassword(newPassword);
+
+      await User.updateOne(user, { password: newPasswordCription });
+    } catch (error) {
+      return res.status(400).json({ message: 'Somenthing goes wrong !' });
+    }
+    res.json({ message: 'update ' });
+  }
+>>>>>>> 44319f286f87abbf03a175e384ca4aeca9a4a812
 }
 
 module.exports = new LoginController();

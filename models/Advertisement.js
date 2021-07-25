@@ -1,7 +1,8 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { query } = require('express');
+const Schema = mongoose.Schema;
+
 // definimos un esquema, le pasamos un objecto
 // es opcional añadir la colección
 // Al poner la opción de index:true creamos indice para el campo de la colección
@@ -15,16 +16,13 @@ const advertisementSchema = mongoose.Schema(
 		tags: [{ type: String, index: true }],
 		updatedAt: { type: Date },
 		reserved: { type: Boolean },
-		sell: { type: Boolean },
-		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', index: true },
+		sold: { type: Boolean },
+		userId: { type: Schema.Types.ObjectId, ref: 'User', index: true}
 	},
 	{
 		collection: 'advertisements', // para evitar la pluralizacion, le indicamos que colección va a usar
 	}
 );
-
-// Indice por texto
-//anuncioSchema.Index( { nombre: 'text'} );
 
 // Define query helper, son como métodos de instancia
 advertisementSchema.query.byName = function (nombre) {
@@ -36,10 +34,12 @@ advertisementSchema.query.byName = function (nombre) {
 //     console.log(ads);
 // });
 
-// Ejemplo de método de instancia
+/**
+ * Métodos de instancia
+ */
 advertisementSchema.methods.crear = function () {
 	this.updatedAt = Date.now();
-	this.sell = false;
+	this.sold = false;
 	this.reserved = false;
 	return this.save();
 };
@@ -51,22 +51,15 @@ advertisementSchema.methods.actualizar = function () {
 
 // Marcamos el anuncio como vendido
 advertisementSchema.methods.vender = function () {
-	this.sell = true;
+	this.sold = true;
 	return this.save();
 };
 
 // Marcamos el anuncio como no vendido
 advertisementSchema.methods.no_Vender = function () {
-	this.sell = false;
+	this.sold = false;
 	return this.save();
 };
-
-/*
-advertisementSchema.methods.sold = function() {
-    this.sale = true;
-    return this.save();
-}
-*/
 
 // Marcamos el anuncio como reservado
 advertisementSchema.methods.reservar = function () {
@@ -89,7 +82,9 @@ advertisementSchema.statics.lista = async function (
 	fields,
 	sort
 ) {
-	const query = Advertisement.find(filtro); // no devuelve una promesa, devuelve una query que tiene un método then
+	const query = Advertisement.find(filtro).populate({ path: 'userId' }); // no devuelve una promesa, devuelve una query que tiene un método then
+		//, model: User});
+		//.populate('userId'); 
 	query.skip(skip);
 	query.limit(limit);
 	query.select(fields);
@@ -108,7 +103,6 @@ advertisementSchema.statics.allowedTags = function () {
 	return ['work', 'kitchen', 'lifestyle', 'motor', 'mobile'];
 };
 
-// creamos el modelo con el esquema definido
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 
 module.exports = Advertisement;

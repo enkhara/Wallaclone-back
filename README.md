@@ -14,6 +14,8 @@ Las llamadas a la API se podrán realizar desde las siguientes rutas o routers:
 ### USER REGISTER: http://localhost:3001/apiv1/auth/signup
 
 ### USER LOGIN: http://localhost:3001/apiv1/auth/signin
+En el body de tipo x-www-form-urlencoded incorporamos el username y el password. 
+Seleccionamos el método POST, y al pulsar send, nos devuelve un JWT válido. 
 ### GET /users:  http://localhost:3001/users
 Listará todos los usuarios.
 ### GET /users/:id => http://localhost:3001/users/:id de usuario
