@@ -43,16 +43,16 @@ router.get('/', async function (req, res, next) {
 		const reserved = req.query.reserved;
 		// http://localhost:3001/apiv1/advertisements/?userId=60eb19914d799d6a125a6669
 		const userId = req.query.userId;
-		
+
 		const limit = parseInt(req.query.limit); //lo convierte a num porque todo en req es string
 		const skip = parseInt(req.query.skip); // para paginar skip
-		
+
 		const fields = req.query.fields;
 		//http://localhost:3001/apiv1/advertisements//?fields=precio%20nombre%20-_id
 		const sort = req.query.sort;
 		//http://localhost:3001/apiv1/advertisements/?sort=precio%20-nombre
 		// ordena por precio ascendente y nombre descendente
-		
+
 		const filtro = {};
 		if (name) {
 			filtro.name = new RegExp('^' + name, 'i');
@@ -119,9 +119,9 @@ router.get('/', async function (req, res, next) {
 			limit,
 			skip,
 			fields,
-			sort	
+			sort
 		);
-		
+
 		res.json(resultado);
 	} catch (err) {
 		next(err);
@@ -136,7 +136,9 @@ router.get('/:id', async (req, res, next) => {
 	try {
 		const _id = req.params.id;
 
-		const advert = await Advertisement.findOne({ _id: _id }).populate({ path: 'userId'});
+		const advert = await Advertisement.findOne({ _id: _id }).populate({
+			path: 'userId',
+		});
 
 		if (!advert) {
 			return res.status(404).json({ error: 'not found' });
@@ -188,7 +190,7 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 	console.log(
 		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
 	);
-	
+
 	try {
 		var image = '';
 		var userId = req.apiAuthUserId;
@@ -196,9 +198,6 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 		if (req.file) {
 			image = req.file.filename;
 		}
-		//console.log('req.file', req.file);
-		//console.log('req.file.filename', req.file.filename);
-		//const anuncioData = req.body;
 
 		const anuncio = new Advertisement({
 			name,
@@ -268,7 +267,6 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 		}
 
 		await anuncioActualizado.actualizar(); // le actualizamos el campo de la fecha updateAt
-
 		res.json({ result: anuncioActualizado });
 	} catch (error) {
 		next(error);
