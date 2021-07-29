@@ -47,35 +47,35 @@ app.use('/apiv1/tags', require('./routes/api/tags'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  if (err.array) {
-    const errorInfo = err.array({ onlyFirstError: true })[0];
-    err.message = `Not valid - ${errorInfo.param} ${errorInfo.msg}`;
-    err.status = 422;
-  }
-  res.status(err.status || 500);
-  // si es una petición al API respondo JSON...
-  if (isAPIRequest(req)) {
-    res.json({ error: err.message });
-    return;
-  }
+	if (err.array) {
+		const errorInfo = err.array({ onlyFirstError: true })[0];
+		err.message = `Not valid - ${errorInfo.param} ${errorInfo.msg}`;
+		err.status = 422;
+	}
+	res.status(err.status || 500);
+	// si es una petición al API respondo JSON...
+	if (isAPIRequest(req)) {
+		res.json({ error: err.message });
+		return;
+	}
 
-  // set locals, only providing error in development
+	// set locals, only providing error in development
 
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+	// render the error page
 
-  res.render('error');
+	res.render('error');
 });
 
 function isAPIRequest(req) {
-  return req.originalUrl.indexOf('/apiv1/') === 0;
+	return req.originalUrl.indexOf('/apiv1/') === 0;
 }
 
 module.exports = app;
