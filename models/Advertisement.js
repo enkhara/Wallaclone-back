@@ -77,20 +77,19 @@ advertisementSchema.methods.desreservar = function () {
 // es un método que no está dentro de mongoose
 advertisementSchema.statics.lista = async function (
 	filtro,
-	skip,
 	limit,
+	skip,
 	fields,
 	sort
 ) {
-	// Para que la paginación funcione 
-	// siempre se debe aplicar el salto (skip) antes del limite, el limite es el tamaño de la página
-	const query = Advertisement.find(filtro).populate({ path: 'userId' }); // no devuelve una promesa, devuelve una query que tiene un método then
-		//, model: User});
-		//.populate('userId'); 
-	query.skip(skip); 
+	// no devuelve una promesa, devuelve una query que tiene un método then
+	const query = Advertisement.find(filtro);
+	
 	query.limit(limit);
+	query.skip(skip);
 	query.select(fields);
 	query.sort(sort);
+	query.populate({ path: 'userId' });
 
 	// const result = {};
 	// if (includeTotal) {
@@ -102,7 +101,7 @@ advertisementSchema.statics.lista = async function (
 	// if (cb) return cb(null, result);
 	// return result;
 
-	return query.exec(); // devuelve una promesa
+	return await query.exec(); // devuelve una promesa
 };
 
 // Método para listar los distintos tags definidos
