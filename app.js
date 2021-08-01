@@ -31,11 +31,47 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/email', mailsRouter);
 
+app.use(cors());
+
+/************************************* CHAT *******************************************/
+const http = require('http');
+const socket = require('socket.io');
+
+const server = http.createServer(app);
+
+const io = socket(server, {
+	cors: {
+		origin: process.env.REACT_APP_API_BASE_URL,
+		methods: ['GET', 'POST'],
+		credentials: true,
+	},
+});
+
+const NEW_CHAT_MESSAGE_EVENT = 'NEW_CHAT_MESSAGE_EVENT';
+
+io.on('connection', (socket) => {
+	console.log(`${socket.id} connected`);
+
+	// Join a conversation
+	const { roomId } = socket.handshake.query;
+	socket.join(roomId);
+
+	// Listen for new messages
+	socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
+		io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+	});
+
+	// Leave the room if the user closes the socket
+	socket.on('disconnect', () => {
+		socket.leave(roomId);
+	});
+});
+
+/************************************* FIN CHAT *****************************************/
+
 /** Rutas del API
  *
  */
-
-app.use(cors());
 
 app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
@@ -44,6 +80,8 @@ app.put('/apiv1/auth/new-password', jwtAuth, loginController.createNewPassword);
 app.post('/apiv1/advertisements', jwtAuth, advertsRouter);
 app.use('/apiv1/advertisements', advertsRouter);
 app.use('/apiv1/tags', require('./routes/api/tags'));
+app.use('/apiv1/conversation', require('./routes/conversations'));
+app.use('/apiv1/message', require('./routes/messages'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

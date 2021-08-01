@@ -3,7 +3,6 @@ const Advertisement = require('../../models/Advertisement');
 var router = express.Router();
 
 // cargamos el modelo
-const Advertisemnet = require('../../models/Advertisement');
 
 /* GET /api/tags */
 // listara los distintos tags de los documentos de anuncios en la base de datos

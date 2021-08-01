@@ -46,7 +46,7 @@ router.get('/', async function (req, res, next) {
 
 		const limit = parseInt(req.query.limit); //lo convierte a num porque todo en req es string
 		const skip = parseInt(req.query.skip); // para paginar skip
-		
+
 		const fields = req.query.fields;
 		//http://localhost:3001/apiv1/advertisements//?fields=precio%20nombre%20-_id
 		const sort = req.query.sort;
@@ -116,8 +116,8 @@ router.get('/', async function (req, res, next) {
 
 		const resultado = await Advertisement.lista(
 			filtro,
-			limit, 
-			skip, 
+			limit,
+			skip,
 			fields,
 			sort
 		);
@@ -135,6 +135,7 @@ router.get('/', async function (req, res, next) {
 router.get('/:id', async (req, res, next) => {
 	try {
 		const _id = req.params.id;
+		console.log(_id);
 
 		const advert = await Advertisement.findOne({ _id: _id }).populate({
 			path: 'userId',
@@ -151,32 +152,6 @@ router.get('/:id', async (req, res, next) => {
 		next(err);
 	}
 });
-
-/** GET TAGS  /apiv1/advertisements/tags */
-router.get('/tags', function (req, res) {
-	console.log('pedimos tags');
-	res.json({ ok: true, allowedTags: Advertisement.allowedTags() });
-});
-
-/** GET anuncios/paginación */
-// router.get('/adverts/:page', (req, res, next) => {
-// 	const perPage = 9;
-// 	const page = req.params.page || 1;
-
-// 	Advertisement.find({})
-// 		.skip(perPage * page - perPage)
-// 		.limit(perPage)
-// 		.exec((err, adverts) => {
-// 			Advertisement.count((err, count) => {
-// 				if (err) return next(error);
-// 				res.render('/adverts/adverts', {
-// 					adverts,
-// 					current: page,
-// 					pages: Math.ceil(count / perPage),
-// 				});
-// 			});
-// 		});
-// });
 
 /**
  * API ZONA PRIVADA (Necesita el token para acceder)
