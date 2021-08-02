@@ -73,6 +73,7 @@ io.on('connection', (socket) => {
  *
  */
 
+app.use('/apiv1/users', require('./routes/users'));
 app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
 app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
@@ -80,8 +81,8 @@ app.put('/apiv1/auth/new-password', jwtAuth, loginController.createNewPassword);
 app.post('/apiv1/advertisements', jwtAuth, advertsRouter);
 app.use('/apiv1/advertisements', advertsRouter);
 app.use('/apiv1/tags', require('./routes/api/tags'));
-app.use('/apiv1/conversation', require('./routes/conversations'));
-app.use('/apiv1/message', require('./routes/messages'));
+app.use('/apiv1/conversations', require('./routes/conversations'));
+app.use('/apiv1/messages', require('./routes/messages'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
