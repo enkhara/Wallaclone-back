@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 //const User = require('../models/User');
 //const Advertisement = require('../models/Advertisement');
-const { User, Advertisement } = require('../models'); 
+const { User, Advertisement } = require('../models');
 const jwtAuth = require('../lib/jwtAuth');
 
 /* GET /users listing. */
@@ -237,7 +237,7 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
  * GET /notification_reserved/:id_adv (Dado un id de anuncio que se ha marcado como reservado 
  * obtenemos todos los usuarios que lo contienen como anuncio favorito para notificarles por email, push, etc. )
  */
- router.get('/notification_reserved/:id_adv', async (req, res, next) => {
+router.get('/notification_reserved/:id_adv', async (req, res, next) => {
 	try {
 		const _advertId = req.params.id;
 		console.log('Anuncio id:', _advertId);
@@ -252,6 +252,24 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 		res.json({ result: user });
 	} catch (err) {
 		next(err);
+	}
+});
+
+/**********************Get User from TOKEN************************************/
+
+router.get('/auth/me', jwtAuth, async (req, res, next) => {
+	console.log(
+		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
+	);
+	try {
+		var userId = req.apiAuthUserId;
+		console.log('userId del token', userId);
+
+		const user = await User.find({ _id: userId });
+		console.log(user);
+		res.status(200).json(user[0]);
+	} catch (err) {
+		res.status(500).json(err);
 	}
 });
 
