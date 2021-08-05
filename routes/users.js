@@ -210,4 +210,49 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 	}
 });
 
+
+/**
+ * GET /notification_sold/:id_adv (Dado un id de anuncio que se ha marcado como vendido 
+ * obtenemos todos los usuarios que lo contienen como anuncio favorito para notificarles por email, push, etc. )
+ */
+ router.get('/notification_sold/:id_adv', async (req, res, next) => {
+	try {
+		const _advertId = req.params.id;
+		console.log('Anuncio id:', _advertId);
+
+		const user = await User.find({
+			ads_favs: { $in: [req.params.id] },
+		});
+
+		if (!user) {
+			return res.status(404).json({ error: 'not found' });
+		}
+		res.json({ result: user });
+	} catch (err) {
+		next(err);
+	}
+});
+
+/**
+ * GET /notification_reserved/:id_adv (Dado un id de anuncio que se ha marcado como reservado 
+ * obtenemos todos los usuarios que lo contienen como anuncio favorito para notificarles por email, push, etc. )
+ */
+ router.get('/notification_reserved/:id_adv', async (req, res, next) => {
+	try {
+		const _advertId = req.params.id;
+		console.log('Anuncio id:', _advertId);
+
+		const user = await User.find({
+			ads_favs: { $in: [req.params.id] },
+		});
+
+		if (!user) {
+			return res.status(404).json({ error: 'not found' });
+		}
+		res.json({ result: user });
+	} catch (err) {
+		next(err);
+	}
+});
+
 module.exports = router;

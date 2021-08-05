@@ -14,11 +14,11 @@ const advertisementSchema = mongoose.Schema(
 		price: { type: Number, index: true },
 		image: String,
 		tags: [{ type: String, index: true }],
-		updatedAt: { type: Date },
 		reserved: { type: Boolean },
 		sold: { type: Boolean },
 		userId: { type: Schema.Types.ObjectId, ref: 'User', index: true}
 	},
+	 { timestamps: true },
 	{
 		collection: 'advertisements', // para evitar la pluralizacion, le indicamos que colección va a usar
 	}
@@ -38,6 +38,7 @@ advertisementSchema.query.byName = function (nombre) {
  * Métodos de instancia
  */
 advertisementSchema.methods.crear = function () {
+	this.createdAt = Date.now();
 	this.updatedAt = Date.now();
 	this.sold = false;
 	this.reserved = false;
@@ -52,24 +53,28 @@ advertisementSchema.methods.actualizar = function () {
 // Marcamos el anuncio como vendido
 advertisementSchema.methods.vender = function () {
 	this.sold = true;
+	this.updatedAt = Date.now();
 	return this.save();
 };
 
 // Marcamos el anuncio como no vendido
 advertisementSchema.methods.no_Vender = function () {
 	this.sold = false;
+	this.updatedAt = Date.now();
 	return this.save();
 };
 
 // Marcamos el anuncio como reservado
 advertisementSchema.methods.reservar = function () {
 	this.reserved = true;
+	this.updatedAt = Date.now();
 	return this.save();
 };
 
 // Marcamos el anuncio como no reservado
 advertisementSchema.methods.desreservar = function () {
 	this.reserved = false;
+	this.updatedAt = Date.now();
 	return this.save();
 };
 
