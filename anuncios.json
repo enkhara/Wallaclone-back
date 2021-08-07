@@ -12,6 +12,7 @@
         "sell": false,
         "reserved": true,
         "userId": "60eb19914d799d6a125a666a",
+        "createdAt": "2021-07-10T10:04:47.913Z",
         "updatedAt": "2021-07-10T10:04:47.913Z"
     },
     {
@@ -27,6 +28,7 @@
         "sell": true,
         "reserved": false,
         "userId": "60eb19914d799d6a125a666a", 
+        "createdAt": "2021-06-03T10:04:47.913Z",
         "updatedAt": "2021-06-03T10:04:47.913Z"
     },
     {
@@ -42,6 +44,7 @@
         "sell": false,
         "reserved": false,
         "userId": "60eb19914d799d6a125a666a", 
+        "createdAt": "2021-06-03T10:04:47.913Z",
         "updatedAt": "2021-05-25T10:04:47.913Z"
     },
     {
@@ -57,6 +60,7 @@
         "sell": false,
         "reserved": false,
         "userId": "60eb19914d799d6a125a666a", 
+        "createdAt": "2021-06-01T10:04:47.913Z",
         "updatedAt": "2021-06-01T10:04:47.913Z"
     },
     {
@@ -71,6 +75,7 @@
         "sell": false,
         "reserved": false,
         "userId": "60eb19914d799d6a125a666a", 
+        "createdAt": "2021-03-20T10:04:47.913Z",
         "updatedAt": "2021-03-20T10:04:47.913Z"
     },
     {
@@ -85,6 +90,7 @@
         "userId": "60f3e6b2631489df48ff8844",
         "reserved": false,
         "sell": false,
+        "createdAt": "2021-07-18T10:04:47.913Z",
         "updatedAt": "2021-07-18T10:04:47.913Z"
     },
     {
@@ -99,6 +105,7 @@
         "userId": "60f3e6b2631489df48ff8844",
         "reserved": false,
         "sell": false,
+        "createdAt": "2021-07-18T15:37:22.952Z",
         "updatedAt": "2021-07-18T15:37:22.952Z"
     },
     {
@@ -113,6 +120,7 @@
         "userId": "60f3e6b2631489df48ff8844",
         "reserved": false,
         "sell": false,
+        "createdAt": "2021-07-18T15:42:03.507Z",
         "updatedAt": "2021-07-18T15:42:03.507Z"
     }
 ]

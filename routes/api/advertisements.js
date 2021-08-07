@@ -274,7 +274,7 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 
 		if (advert.userId != userId) {
 			// Ojo != (no funciona !==)
-			return res.status(403).json({ error: 'userId without authorization' });
+			return res.status(403).json({ error: 'UserId without authorization' });
 		}
 
 		//await Anuncio.remove({_id:_id}); para evitar el error de la consola deprecated
