@@ -50,8 +50,11 @@ router.get('/', async function (req, res, next) {
 		const fields = req.query.fields;
 		//http://localhost:3001/apiv1/advertisements//?fields=precio%20nombre%20-_id
 		const sort = req.query.sort;
-		//http://localhost:3001/apiv1/advertisements/?sort=precio%20-nombre
 		// ordena por precio ascendente y nombre descendente
+		//http://localhost:3001/apiv1/advertisements/?sort=precio%20-nombre
+		
+		// Ordena por últimos anuncios, limitado a x anuncios mostrados
+		//http://localhost:3001/apiv1/advertisements/?sort=-createdAt&limit=9 
 
 		const filtro = {};
 		if (name) {
@@ -135,17 +138,13 @@ router.get('/', async function (req, res, next) {
 router.get('/:id', async (req, res, next) => {
 	try {
 		const _id = req.params.id;
-		console.log(_id);
 
 		const advert = await Advertisement.findOne({ _id: _id }).populate({
 			path: 'userId',
 		});
 
 		if (!advert) {
-			return res.status(404).json({ error: 'not found' });
-			// es lo mismo la sentencia de arriba a lo de aqui abajo
-			//res.status(404).json({error: 'not found'});
-			//return;
+			return res.status(404).json({ error: 'advert not found' });
 		}
 		res.json({ result: advert });
 	} catch (err) {
@@ -169,28 +168,38 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 	try {
 		var image = '';
 		var userId = req.apiAuthUserId;
-		const { name, desc, transaction, price, tags, updatedAt } = req.body;
+		const { name, desc, transaction, price, tags } = req.body;
 		if (req.file) {
 			image = req.file.filename;
 		}
 
-		const anuncio = new Advertisement({
+		const advert = new Advertisement({
 			name,
 			desc,
 			transaction,
 			price,
 			tags,
-			updatedAt,
 			image,
 			userId,
 		});
 
-		const anuncioCreado = await anuncio.save(); // lo guarda en base de datos
+		const advertCreated = await advert.save(); // lo guarda en base de datos
 
-		await anuncio.crear(); // le asigna el resto de campos (sell, reserved, updatedAt)
+		await advert.crear(); // le asigna el resto de campos (sell, reserved, createdAt, updatedAt)
 
-		res.status(201).json({ result: anuncioCreado });
-	} catch (error) {
+		const _id = advertCreated.id; 
+		//console.log('Id de anuncio acabado de crear', _id);
+		// lo devolvemos con los datos del usuario propietario del anuncio
+		const advertCreatedExt = await Advertisement.findOne({ _id: _id }).populate({
+			path: 'userId',
+		});
+
+		if (!advertCreatedExt) {
+			return res.status(404).json({ error: 'advert not found' });
+		}
+		res.status(201).json({ result: advertCreatedExt });	
+	}
+	catch (error) {
 		next(error);
 	}
 });
@@ -219,20 +228,20 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 			return res.status(403).json({ error: 'userId without authorization' });
 		}
 
-		const { name, desc, transaction, price, tags, updatedAt } = req.body;
+		const { name, desc, transaction, price, tags, reserved, sold } = req.body;
 		if (req.file) {
 			image = req.file.filename;
 		}
-		// Si la imagen no viene cargada, se entiende que la han borrado?????
+		// Si la imagen no viene cargada, se entiende que la han eliminado
 		const anuncioActualizado = await Advertisement.findOneAndUpdate(
 			{ _id: _id },
-			{ name, desc, transaction, price, tags, updatedAt, image, userId },
+			{ name, desc, transaction, price, tags, reserved, sold, image, userId},
 			{
 				new: true,
 				useFindAndModify: false,
 			}
-		);
-
+		).populate({ path: 'userId', });
+		
 		// usamos {new:true} para que nos devuelva el anuncio actualizado, para evitar el error
 		// de deprecated añade useFindAndModify:false
 
@@ -241,7 +250,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 			return;
 		}
 
-		await anuncioActualizado.actualizar(); // le actualizamos el campo de la fecha updateAt
+		await anuncioActualizado.actualizar(); // Actualiza updatedAt
 		res.json({ result: anuncioActualizado });
 	} catch (error) {
 		next(error);
@@ -265,7 +274,7 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 
 		if (advert.userId != userId) {
 			// Ojo != (no funciona !==)
-			return res.status(403).json({ error: 'userId without authorization' });
+			return res.status(403).json({ error: 'UserId without authorization' });
 		}
 
 		//await Anuncio.remove({_id:_id}); para evitar el error de la consola deprecated

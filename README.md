@@ -110,6 +110,9 @@ Un fichero en formato JSON que nos muestra los datos resultantes de realizar la 
     `http://localhost:3001/apiv1/advertisements?sort=price name`
     Obtiene los anuncios ordenados por precio ascendente y por nombre ascendentemente.
 
+    `http://localhost:3001/apiv1/advertisements?sort=-createdAt&limit=9`
+    Obtiene los 9 últimos anuncios creados, ordena descendentemente por fecha de creación mostrando los 9.
+
     **7. Lista de anuncios que solo muestre algunos campos**
 
     `http://localhost:3001/apiv1/advertisements?fields=image sale`
