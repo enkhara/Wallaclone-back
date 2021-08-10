@@ -37,8 +37,8 @@ router.get('/', async function (req, res, next) {
  */
 router.get('/:userId', async (req, res, next) => {
 	try {
-		const _userId = req.params.id;
-
+		const _userId = req.params.userId;
+		console.log(req.params.userId);
 		const user = await User.findOne({ _id: _userId });
 
 		if (!user) {
@@ -265,9 +265,9 @@ router.get('/auth/me', jwtAuth, async (req, res, next) => {
 		var userId = req.apiAuthUserId;
 		console.log('userId del token', userId);
 
-		const user = await User.find({ _id: userId });
+		const user = await User.findOne({ _id: userId });
 		console.log(user);
-		res.status(200).json(user[0]);
+		res.status(200).json(user);
 	} catch (err) {
 		res.status(500).json(err);
 	}

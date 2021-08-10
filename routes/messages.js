@@ -34,13 +34,4 @@ router.get('/:conversationId', async (req, res, next) => {
 	}
 });
 
-// router.get('/', async function (req, res, next) {
-// 	try {
-// 		const resultado = await Message.find();
-// 		res.json(resultado);
-// 	} catch (err) {
-// 		next(err);
-// 	}
-// });
-
 module.exports = router;
