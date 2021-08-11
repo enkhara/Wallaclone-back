@@ -49,7 +49,7 @@ class LoginController {
 			jwt.sign(
 				{ _id: usuario._id },
 				process.env.JWT_SECRET,
-				{ expiresIn: '2h' },
+				{ expiresIn: '24h' },
 				(err, jwtToken) => {
 					if (err) {
 						next(err);
