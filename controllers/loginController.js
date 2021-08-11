@@ -11,8 +11,11 @@ class LoginController {
   /**
    * POST /auth/signup (User Register)
    */
+
   async post(req, res, next) {
     const { username, email, password } = req.body;
+    // console.log(req.getLocale());
+
     // User.hashPassword(password).then((hash) => {
     //   User.create({
     //     username: username,
@@ -55,11 +58,11 @@ class LoginController {
         email: email,
         password: passwordEncript,
       });
-      const message = await mailer(
-        email,
-        'welcome user registered',
-        'We welcome you to the largest community of shopping between people !!!'
-      );
+      const htmlMessage =
+        ('welcome user registered',
+        'We welcome you to the largest community of shopping between people !!!');
+
+      const message = await mailer(email, htmlMessage);
       const transporter = await emailTransportConfigure();
 
       transporter.sendMail(message, (err, info) => {
