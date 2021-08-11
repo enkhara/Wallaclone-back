@@ -5,12 +5,7 @@ const Schema = mongoose.Schema;
 
 const ConversationSchema = new Schema(
 	{
-		// members: [
-		// 	{
-		// 		senderId: { type: String },
-		// 		receiverId: { type: String },
-		// 	},
-		// ],
+		advertisementId: { type: String, index: true },
 		members: {
 			type: Array,
 		},

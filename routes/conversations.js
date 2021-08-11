@@ -5,9 +5,10 @@ const Conversation = require('../models/Conversation');
 
 // new Conversation
 
-router.post('/', async (res, req, next) => {
+router.post('/', async (req, res, next) => {
 	console.log(req.body);
 	const newConversation = new Conversation({
+		advertisementId: req.body.advertisementId,
 		members: [req.body.senderId, req.body.receiverId],
 	});
 
@@ -22,26 +23,19 @@ router.post('/', async (res, req, next) => {
 
 //get conversation of a user
 
-router.get('/:userId', async (req, res, next) => {
+router.get('/:userId/:advertisementId', async (req, res, next) => {
 	try {
 		console.log('userid', req.params);
-		const userId = req.params.userId;
+		const { userId, advertisementId } = req.params;
 		const conversation = await Conversation.find({
+			advertisementId: advertisementId,
 			members: { $in: [req.params.userId] },
+			//BUSCAR COMO FILTRAR POR DOS CAMPOS LISTA ANUNCIOS advertisements.js
 		});
 		res.status(200).json(conversation);
 	} catch (err) {
 		next(err);
 		//return res.status(500).json(err);
-	}
-});
-
-router.get('/', async function (req, res, next) {
-	try {
-		const resultado = await Conversation.find();
-		res.json(resultado);
-	} catch (err) {
-		next(err);
 	}
 });
 
