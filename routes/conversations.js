@@ -31,7 +31,7 @@ router.get('/:userId/:advertisementId', async (req, res, next) => {
 			advertisementId: advertisementId,
 			members: { $in: [req.params.userId] },
 			//BUSCAR COMO FILTRAR POR DOS CAMPOS LISTA ANUNCIOS advertisements.js
-		});
+		}).populate({ path: 'advertisementId' });;
 		res.status(200).json(conversation);
 	} catch (err) {
 		next(err);
