@@ -7,9 +7,10 @@ const Conversation = require('../models/Conversation');
 
 router.post('/', async (req, res, next) => {
 	console.log(req.body);
+	const { advertisementId, senderId, receiverId } = req.body;
 	const newConversation = new Conversation({
-		advertisementId: req.body.advertisementId,
-		members: [req.body.senderId, req.body.receiverId],
+		advertisementId,
+		members: [senderId, receiverId],
 	});
 
 	try {
@@ -23,13 +24,39 @@ router.post('/', async (req, res, next) => {
 
 //get conversation of a user
 
+//router.get('/:userId/:advertisementId', async (req, res, next) => {
+
+router.get('/userConversations/:userId', async (req, res, next) => {
+	try {
+		const userId = req.params.userId;
+		console.log('userId', userId);
+		const conversation = await Conversation.find({
+			members: { $in: [userId] },
+		});
+		console.log('userConversations', conversation);
+		res.status(200).json(conversation);
+	} catch (err) {
+		next(err);
+	}
+});
+
+router.get('/users/:userId', async (req, res, next) => {
+	try {
+		const users = await Conversation.find({ members: { $in: ![userId] } });
+		console.log(users);
+	} catch (err) {
+		next(err);
+	}
+});
+
 router.get('/:userId/:advertisementId', async (req, res, next) => {
 	try {
 		console.log('userid', req.params);
 		const { userId, advertisementId } = req.params;
 		const conversation = await Conversation.find({
-			advertisementId: advertisementId,
-			members: { $in: [req.params.userId] },
+			advertisementId,
+			members: { $in: [userId] },
+			//members: { $in: [req.params.userId] },
 			//BUSCAR COMO FILTRAR POR DOS CAMPOS LISTA ANUNCIOS advertisements.js
 		});
 		res.status(200).json(conversation);
