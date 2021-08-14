@@ -251,7 +251,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 		}
 
 		await anuncioActualizado.actualizar(); // Actualiza updatedAt
-		res.json({ result: anuncioActualizado });
+		res.status(201).json({ result: anuncioActualizado });
 	} catch (error) {
 		next(error);
 	}
@@ -279,7 +279,7 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 
 		//await Anuncio.remove({_id:_id}); para evitar el error de la consola deprecated
 		await Advertisement.deleteOne({ _id: _id });
-		res.json();
+		res.status(201).json();
 	} catch (error) {
 		next(error);
 	}
@@ -294,7 +294,7 @@ router.delete('/user/:id', jwtAuth, async (req, res, next) => {
 
 		// Borrará todos los anuncios del usuario que le pasamos como parámetro
 		await Advertisement.deleteMany({ userId: _userId });
-		res.json();
+		res.status(201).json();
 	} catch (error) {
 		next(error);
 	}
