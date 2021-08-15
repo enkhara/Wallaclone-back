@@ -14,42 +14,6 @@ class LoginController {
 
   async post(req, res, next) {
     const { username, email, password } = req.body;
-    // console.log(req.getLocale());
-
-    // User.hashPassword(password).then((hash) => {
-    //   User.create({
-    //     username: username,
-    //     email: email,
-    //     password: hash,
-    //   })
-
-    //     .then((email) => {
-    //       const message = mailer(
-    //         email,
-    //         'User registered',
-    //         'We welcome you to the largest community of shopping between people !!!'
-    //       );
-    //       const transporter = emailTransportConfigure();
-
-    //       transporter.sendMail(message, (err, info) => {
-    //         if (err) {
-    //           console.log('Error occurred. ' + err.message);
-    //           return process.exit(1);
-    //         }
-    //         console.log('Message sent: %s', info.messageId);
-    //         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    //       });
-    //     })
-    //     .then(() => {
-    //       res.json('USER REGISTERED');
-    //     })
-    //     .catch((error) => {
-    //       if (error) {
-    //         res.status(400).json({ error: error });
-    //         console.log(error);
-    //       }
-    //     });
-    // });
 
     try {
       const passwordEncript = await User.hashPassword(password);
@@ -58,11 +22,10 @@ class LoginController {
         email: email,
         password: passwordEncript,
       });
-      const htmlMessage =
-        ('welcome user registered',
-        'We welcome you to the largest community of shopping between people !!!');
+      const htmlMessage = `<b>Thank you for registering</b><br></br>
+        <p>We welcome you to the largest community of shopping between people !!!</p>`;
 
-      const message = await mailer(email, htmlMessage);
+      const message = await mailer(email, 'Welcome Wallaclone', htmlMessage);
       const transporter = await emailTransportConfigure();
 
       transporter.sendMail(message, (err, info) => {
@@ -73,7 +36,7 @@ class LoginController {
         console.log('Message sent: %s', info.messageId);
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       });
-      res.json('USER REGISTERED');
+      res.status(201).json('USER REGISTERED');
     } catch (error) {
       return res.status(400).json({
         message: 'Somenthing goes wrong !  user already registered',
@@ -129,7 +92,11 @@ class LoginController {
         expiresIn: '2h',
       });
       verificationLinks = `${authPath}new-password/${user._id}/${token}`;
-      const message = await mailer(email, 'Forgot Password', verificationLinks);
+      const message = await mailerLink(
+        email,
+        'Forgot Password',
+        verificationLinks
+      );
       const transporter = await emailTransportConfigure();
 
       transporter.sendMail(message, (err, info) => {
@@ -146,7 +113,9 @@ class LoginController {
       return res.status(400).json({ message: 'Somenthing goes wrong !' });
     }
 
-    res.json({ message, info: emailStatus, test: verificationLinks });
+    res
+      .status(201)
+      .json({ message, info: emailStatus, test: verificationLinks });
   }
 
   async createNewPassword(req, res, next) {
@@ -165,7 +134,7 @@ class LoginController {
     } catch (error) {
       return res.status(400).json({ message: 'Somenthing goes wrong !' });
     }
-    res.json({ message: 'update ' });
+    res.status(201).json({ message: 'update ' });
   }
 }
 
