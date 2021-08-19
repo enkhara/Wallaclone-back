@@ -89,7 +89,7 @@ class LoginController {
     try {
       const user = await User.findOne({ email });
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '2h',
+        expiresIn: '24h',
       });
       verificationLinks = `${authPath}new-password/${user._id}/${token}`;
       const message = await mailerLink(
