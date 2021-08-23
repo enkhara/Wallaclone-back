@@ -138,7 +138,7 @@ router.get('/', async function (req, res, next) {
 router.get('/:id', async (req, res, next) => {
 	try {
 		const _id = req.params.id;
-
+		
 		const advert = await Advertisement.findOne({ _id: _id }).populate({
 			path: 'userId',
 		});
@@ -221,6 +221,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 		var image = '';
 		const userId = req.apiAuthUserId;
 		// Buscamos el anuncio por id y comprobamos que el anuncio pertenezca al userId que hace la petición
+		const advertOld = await Advertisement.findOne({ _id: _id });
 		const advert = await Advertisement.findOne({ _id: _id });
 		//console.log('advert.userId', advert.userId ,'vs userId', userId)
 		if (advert.userId != userId) {
@@ -232,7 +233,10 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 		if (req.file) {
 			image = req.file.filename;
 		}
-		// Si la imagen no viene cargada, se entiende que la han eliminado
+		else { // no nos pasan la imagen, mantenemos la imagen actual
+			image = advertOld.image;
+		}
+
 		const anuncioActualizado = await Advertisement.findOneAndUpdate(
 			{ _id: _id },
 			{ name, desc, transaction, price, tags, reserved, sold, image, userId},
@@ -299,5 +303,6 @@ router.delete('/user/:id', jwtAuth, async (req, res, next) => {
 		next(error);
 	}
 });
+
 
 module.exports = router;
