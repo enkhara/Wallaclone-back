@@ -38,7 +38,7 @@ router.get('/', async function (req, res, next) {
 router.get('/:userId', async (req, res, next) => {
 	try {
 		const _userId = req.params.userId;
-		console.log(req.params.userId);
+		//console.log(req.params.userId);
 		const user = await User.findOne({ _id: _userId });
 
 		if (!user) {
