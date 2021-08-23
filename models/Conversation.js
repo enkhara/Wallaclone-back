@@ -8,6 +8,8 @@ const ConversationSchema = new Schema(
 		advertisementId: { type: String, ref: 'Advertisement', index: true },
 		members: {
 			type: Array,
+			ref: 'User',
+			index: true,
 		},
 	},
 	{ timestamps: true }
