@@ -56,13 +56,27 @@ router.get('/:userId', async (req, res, next) => {
  * TODO: se podrá actualizar cualquiera de los datos, incluida la contraseña
  */
 router.put('/:id', jwtAuth, async (req, res, next) => {
+	console.log(
+		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
+	);
 	try {
 		const _id = req.params.id;
-		const userData = req.body; // TODO (ESTA FUNCIÓN NO PODRÁ ACTUALIZAR LOS FAVORITOS, SOLO EL RESTO DE CAMPOS)
+		const ads_fav = [];
+		//const userData = req.body; 
+		const { username, email, password } = req.body;
 
+		const userOld = await User.findById({ _id: _id });
+		if (!userOld) {
+			return res.status(404).json({ error: 'user not found' });
+		}
+		
+		ads_fav = userOld.ads_favs;
+	
+		// Actualizamos la cuenta del usuario con los datos y sus favoritos
 		const userActualizado = await User.findOneAndUpdate(
 			{ _id: _id },
-			userData,
+		//	userData,
+			{ username, email, password, ads_fav },
 			{
 				new: true,
 				useFindAndModify: false,
@@ -73,7 +87,7 @@ router.put('/:id', jwtAuth, async (req, res, next) => {
 		// de deprecated añade useFindAndModify:false
 
 		if (!userActualizado) {
-			res.status(404).json({ error: 'not found' });
+			res.status(404).json({ error: 'user not found' });
 			return;
 		}
 
