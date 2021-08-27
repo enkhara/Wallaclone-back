@@ -53,7 +53,7 @@ router.get('/:userId', async (req, res, next) => {
 /**
  * PUT /users/:id (body)
  * Actualizar un usuario, en el body le pasamos lo que queremos actualizar
- * TODO: se podrá actualizar cualquiera de los datos, incluida la contraseña
+ * Se podrá actualizar cualquiera de los datos, incluida la contraseña
  */
 router.put('/:id', jwtAuth, async (req, res, next) => {
 	console.log(
@@ -61,22 +61,56 @@ router.put('/:id', jwtAuth, async (req, res, next) => {
 	);
 	try {
 		const _id = req.params.id;
-		const ads_fav = [];
-		//const userData = req.body; 
-		const { username, email, password } = req.body;
+		let passwordEncript;
+		//const userData = req.body;
+		//console.log('USERDATA', userData);
+		//console.log('REQ BODY', req.body);
+		const { usernameNew, emailNew, passwordOld, passwordNew } = req.body;
+		
+		console.log('_id', _id)
+		console.log('username', usernameNew)
+		console.log('email', emailNew)
+		console.log('password', passwordOld)
+		console.log('passwordNew', passwordNew)
 
+		// Comprobaciones de los datos del usuario que nos pasan no estén asignados a otro usuario
+		// 1ª Nombre de usuario - no exista ya en BD para otro id de usuario 
+		const user1 = await User.findOne({ username: usernameNew });
+		if (user1) {
+			if (user1._id != _id) {
+				return res.status(202).json({ error: 'Invalid user name, assigned to another user' });
+			}
+		}
+		// 2ª E-mail tampoco exista ya en BD para otro id de usuario 
+		const user2 = await User.findOne({ email: emailNew });
+		if (user2) {
+			if (user2._id != _id) {
+				return res.status(202).json({ error: 'Invalid email, assigned to another user' });
+			}
+		}
+		
 		const userOld = await User.findById({ _id: _id });
 		if (!userOld) {
 			return res.status(404).json({ error: 'user not found' });
 		}
 		
-		ads_fav = userOld.ads_favs;
-	
-		// Actualizamos la cuenta del usuario con los datos y sus favoritos
+		// si nos pasan password actualizada, la actualizamos 
+		// sino dejamos la actual que ya está encriptada
+		if (passwordNew !== null && passwordNew !== undefined && passwordNew !== "") {
+			//console.log('encripta la nueva clave')
+			passwordEncript = await User.hashPassword(passwordNew);
+			
+		}
+		else {
+			
+			passwordEncript = passwordOld;
+		}
+		
+		// Actualizamos la cuenta del usuario con los datos nuevos y sus favoritos
 		const userActualizado = await User.findOneAndUpdate(
 			{ _id: _id },
 		//	userData,
-			{ username, email, password, ads_fav },
+			{ username:usernameNew, email:emailNew, password: passwordEncript, ads_favs: userOld.ads_favs },
 			{
 				new: true,
 				useFindAndModify: false,
@@ -91,7 +125,8 @@ router.put('/:id', jwtAuth, async (req, res, next) => {
 			return;
 		}
 
-		res.json({ result: userActualizado });
+		res.status(201).json({ result: userActualizado });
+		//res.status(201).json('USERDATA UPDATED');
 	} catch (error) {
 		next(error);
 	}
