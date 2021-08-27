@@ -1,11 +1,12 @@
 'use strict';
+const jwtAuth = require('../lib/jwtAuth');
 
 const router = require('express').Router();
 const Message = require('../models/Message');
 
 //Add
 
-router.post('/', async (req, res, next) => {
+router.post('/', jwtAuth, async (req, res, next) => {
 	const { conversationId, sender, text } = req.body;
 	const newMessage = new Message({ conversationId, sender, text });
 	console.log(req.body);
@@ -21,7 +22,7 @@ router.post('/', async (req, res, next) => {
 	}
 });
 
-router.get('/:conversationId', async (req, res, next) => {
+router.get('/:conversationId', jwtAuth, async (req, res, next) => {
 	try {
 		console.log(req.params);
 		const messages = await Message.find({
