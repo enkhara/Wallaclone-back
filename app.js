@@ -43,6 +43,7 @@ app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
 app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
 app.put('/apiv1/auth/new-password', jwtAuth, loginController.createNewPassword);
+app.put('/apiv1/users', jwtAuth, usersRouter);
 app.post('/apiv1/advertisements', jwtAuth, advertsRouter);
 app.put('/apiv1/advertisements', jwtAuth, advertsRouter);
 app.use('/apiv1/advertisements', advertsRouter);

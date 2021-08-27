@@ -178,7 +178,7 @@ router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
 			desc,
 			transaction,
 			price,
-			tags,
+			tags, 
 			image,
 			userId,
 		});
@@ -226,7 +226,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 		//console.log('advert.userId', advert.userId ,'vs userId', userId)
 		if (advert.userId != userId) {
 			// Ojo != (no funciona !==)
-			return res.status(403).json({ error: 'userId without authorization' });
+			return res.status(403).json({ error: 'UserId without authorization' });
 		}
 
 		const { name, desc, transaction, price, tags, reserved, sold } = req.body;
@@ -236,10 +236,17 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
 		else { // no nos pasan la imagen, mantenemos la imagen actual
 			image = advertOld.image;
 		}
-
+		
+		//Convertimos string de tags en array
+		var strArr = tags.replace(/\s+/g, '').split(',');
+		var tagsArray = [];
+		for (i = 0; i < strArr.length; i++) {
+			tagsArray.push(strArr[i]);
+		}
+		
 		const anuncioActualizado = await Advertisement.findOneAndUpdate(
 			{ _id: _id },
-			{ name, desc, transaction, price, tags, reserved, sold, image, userId},
+			{ name, desc, transaction, price, tags: tagsArray, reserved, sold, image, userId},
 			{
 				new: true,
 				useFindAndModify: false,
