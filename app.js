@@ -38,7 +38,7 @@ app.use(cors());
  *
  */
 
-app.use('/apiv1/users', require('./routes/users'));
+app.use('/apiv1/users', usersRouter);
 app.post('/apiv1/auth/signin', loginController.postJWT);
 app.post('/apiv1/auth/signup', loginController.post);
 app.put('/apiv1/auth/forgot-password', loginController.forgotPassword);
@@ -46,6 +46,8 @@ app.put('/apiv1/auth/new-password', jwtAuth, loginController.createNewPassword);
 app.put('/apiv1/users', jwtAuth, usersRouter);
 app.post('/apiv1/advertisements', jwtAuth, advertsRouter);
 app.put('/apiv1/advertisements', jwtAuth, advertsRouter);
+app.put('/apiv1/advertisements/changereserved', jwtAuth, advertsRouter);
+app.put('/apiv1/advertisements/changesold', jwtAuth, advertsRouter);
 app.use('/apiv1/advertisements', advertsRouter);
 app.use('/apiv1/favourites', jwtAuth, advertsFavRouter);
 app.use('/apiv1/tags', require('./routes/api/tags'));

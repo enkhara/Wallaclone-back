@@ -196,3 +196,21 @@ Elimina un anuncio dado su id de anuncio.
 Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
 
 URL ejemplo: <http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f>
+
+### PUT /apiv1/advertisements/changereserved/:id 
+
+Actualizará el dato de reservado (reserved) del id anuncio (pasado por params). 
+Utilizamos el método PUT, también deberemos pasar en la cabecera el token de Authorization.
+Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
+Solo actualiza el dato de reservado (reserved) del id anuncio, este dato se lo pasamos en el body con formato x-www-form-urlencoded.
+
+URL ejemplo: <http://localhost:3001/apiv1/advertisements/changereserved/6111b57f5a6a9ae95d2930aa>
+### PUT /apiv1/advertisements/changesold/:id 
+
+Actualizará el dato de vendido (sold) del id anuncio (pasado por params). 
+Utilizamos el método PUT, también deberemos pasar en la cabecera el token de Authorization.
+Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
+Solo actualiza el dato de reservado (reserved) del id anuncio, este dato se lo pasamos en el body con formato x-www-form-urlencoded.
+
+
+URL ejemplo: <http://localhost:3001/apiv1/advertisements/changesold/6111b57f5a6a9ae95d2930aa>
