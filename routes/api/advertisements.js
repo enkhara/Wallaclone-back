@@ -167,47 +167,48 @@ router.get('/:id', async (req, res, next) => {
  */
 
 router.post('/', jwtAuth, upload.single('image'), async (req, res, next) => {
-	console.log(
-		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
-	);
+  console.log(
+    `El usuario que está haciendo la petición es ${req.apiAuthUserId}`
+  );
 
-	try {
-		var image = '';
-		var userId = req.apiAuthUserId;
-		const { name, desc, transaction, price, tags } = req.body;
-		if (req.file) {
-			image = req.file.filename;
-		}
+  try {
+    var image = '';
+    var userId = req.apiAuthUserId;
+    const { name, desc, transaction, price, tags } = req.body;
+    if (req.file) {
+      image = req.file.filename;
+    }
 
-		const advert = new Advertisement({
-			name,
-			desc,
-			transaction,
-			price,
-			tags, 
-			image,
-			userId,
-		});
+    const advert = new Advertisement({
+      name,
+      desc,
+      transaction,
+      price,
+      tags,
+      image,
+      userId,
+    });
 
-		const advertCreated = await advert.save(); // lo guarda en base de datos
+    const advertCreated = await advert.save(); // lo guarda en base de datos
 
-		await advert.crear(); // le asigna el resto de campos (sell, reserved, createdAt, updatedAt)
+    await advert.crear(); // le asigna el resto de campos (sell, reserved, createdAt, updatedAt)
 
-		const _id = advertCreated._id; 
-		//console.log('Id de anuncio acabado de crear', _id);
-		// lo devolvemos con los datos del usuario propietario del anuncio
-		const advertCreatedExt = await Advertisement.findOne({ _id: _id }).populate({
-			path: 'userId',
-		});
+    const _id = advertCreated._id;
+    //console.log('Id de anuncio acabado de crear', _id);
+    // lo devolvemos con los datos del usuario propietario del anuncio
+    const advertCreatedExt = await Advertisement.findOne({ _id: _id }).populate(
+      {
+        path: 'userId',
+      }
+    );
 
-		if (!advertCreatedExt) {
-			return res.status(404).json({ error: 'advert not found' });
-		}
-		res.status(201).json({ result: advertCreatedExt });	
-	}
-	catch (error) {
-		next(error);
-	}
+    if (!advertCreatedExt) {
+      return res.status(404).json({ error: 'advert not found' });
+    }
+    res.status(201).json({ result: advertCreatedExt });
+  } catch (error) {
+    next(error);
+  }
 });
 
 /**
@@ -328,20 +329,21 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
       return;
     }
 
-    	const anuncioActualizadoExt = await Advertisement.findOne({ _id: _idact }).populate({
-			path: 'userId',
-		});
+    const anuncioActualizadoExt = await Advertisement.findOne({
+      _id: _idact,
+    }).populate({
+      path: 'userId',
+    });
 
-		if (!anuncioActualizadoExt) {
-			return res.status(404).json({ error: 'advert not found' });
-		}
-		
-		res.status(201).json({ result: anuncioActualizadoExt });
+    if (!anuncioActualizadoExt) {
+      return res.status(404).json({ error: 'advert not found' });
+    }
+
+    res.status(201).json({ result: anuncioActualizadoExt });
   } catch (error) {
     next(error);
   }
-
-
+});
 /**
  * DELETE /apiv1/advertisements: id (Elimina un anuncio dado su id)
  */
@@ -390,52 +392,55 @@ router.delete('/user/:id', jwtAuth, async (req, res, next) => {
  * Actualizar un anuncio, en el body le pasamos lo que queremos actualizar
  * solo el usuario propietario del anuncio puede modificarlo
  */
- router.put('/changereserved/:id', jwtAuth, async (req, res, next) => {
-	console.log(
-		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
-	);
+router.put('/changereserved/:id', jwtAuth, async (req, res, next) => {
+  console.log(
+    `El usuario que está haciendo la petición es ${req.apiAuthUserId}`
+  );
 
-	try {
-		const _id = req.params.id;
-		//const anuncioData = req.body;
+  try {
+    const _id = req.params.id;
+    //const anuncioData = req.body;
 
-		const userId = req.apiAuthUserId;
-		// Buscamos el anuncio por id y comprobamos que el anuncio pertenezca al userId que hace la petición
-		const advertOld = await Advertisement.findOne({ _id: _id });
-		const advert = await Advertisement.findOne({ _id: _id });
-		//console.log('advert.userId', advert.userId ,'vs userId', userId)
-		if (advert.userId != userId) {
-			// Ojo != (no funciona !==)
-			return res.status(403).json({ error: 'UserId without authorization' });
-		}
+    const userId = req.apiAuthUserId;
+    // Buscamos el anuncio por id y comprobamos que el anuncio pertenezca al userId que hace la petición
+    const advertOld = await Advertisement.findOne({ _id: _id });
+    const advert = await Advertisement.findOne({ _id: _id });
+    //console.log('advert.userId', advert.userId ,'vs userId', userId)
+    if (advert.userId != userId) {
+      // Ojo != (no funciona !==)
+      return res.status(403).json({ error: 'UserId without authorization' });
+    }
 
-		const { reserved } = req.body;
-		if (reserved != undefined) {
-			if (reserved == 'true') {
-				//console.log('entro en reservar', reserved);
-				await advert.reservar();
-			} else {
-				//console.log('entro en desreservar', reserved);
-				await advert.desreservar();
-			}
-		} else {
-			//console.log('Salimos sin actualizar reserved', reserved);
-			return res.status(404).json({ error: 'data not changed, please review url request' });
-		}
-			
+    const { reserved } = req.body;
+    if (reserved != undefined) {
+      if (reserved == 'true') {
+        //console.log('entro en reservar', reserved);
+        await advert.reservar();
+      } else {
+        //console.log('entro en desreservar', reserved);
+        await advert.desreservar();
+      }
+    } else {
+      //console.log('Salimos sin actualizar reserved', reserved);
+      return res
+        .status(404)
+        .json({ error: 'data not changed, please review url request' });
+    }
 
-		const anuncioActualizadoExt = await Advertisement.findOne({ _id: _id }).populate({
-			path: 'userId',
-		});
+    const anuncioActualizadoExt = await Advertisement.findOne({
+      _id: _id,
+    }).populate({
+      path: 'userId',
+    });
 
-		if (!anuncioActualizadoExt) {
-			return res.status(404).json({ error: 'advert not found' });
-		}
-		
-		res.status(201).json({ result: anuncioActualizadoExt });
-	} catch (error) {
-		next(error);
-	}
+    if (!anuncioActualizadoExt) {
+      return res.status(404).json({ error: 'advert not found' });
+    }
+
+    res.status(201).json({ result: anuncioActualizadoExt });
+  } catch (error) {
+    next(error);
+  }
 });
 
 /**
@@ -443,53 +448,55 @@ router.delete('/user/:id', jwtAuth, async (req, res, next) => {
  * Actualizar un anuncio, en el body le pasamos lo que queremos actualizar
  * solo el usuario propietario del anuncio puede modificarlo
  */
- router.put('/changesold/:id', jwtAuth, async (req, res, next) => {
-	console.log(
-		`El usuario que está haciendo la petición es ${req.apiAuthUserId}`
-	);
+router.put('/changesold/:id', jwtAuth, async (req, res, next) => {
+  console.log(
+    `El usuario que está haciendo la petición es ${req.apiAuthUserId}`
+  );
 
-	try {
-		const _id = req.params.id;
-		//const anuncioData = req.body;
+  try {
+    const _id = req.params.id;
+    //const anuncioData = req.body;
 
-		const userId = req.apiAuthUserId;
-		// Buscamos el anuncio por id y comprobamos que el anuncio pertenezca al userId que hace la petición
-		const advertOld = await Advertisement.findOne({ _id: _id });
-		const advert = await Advertisement.findOne({ _id: _id });
-		//console.log('advert.userId', advert.userId ,'vs userId', userId)
-		if (advert.userId != userId) {
-			// Ojo != (no funciona !==)
-			return res.status(403).json({ error: 'UserId without authorization' });
-		}
+    const userId = req.apiAuthUserId;
+    // Buscamos el anuncio por id y comprobamos que el anuncio pertenezca al userId que hace la petición
+    const advertOld = await Advertisement.findOne({ _id: _id });
+    const advert = await Advertisement.findOne({ _id: _id });
+    //console.log('advert.userId', advert.userId ,'vs userId', userId)
+    if (advert.userId != userId) {
+      // Ojo != (no funciona !==)
+      return res.status(403).json({ error: 'UserId without authorization' });
+    }
 
-		const { sold } = req.body;
-		if (sold != undefined) {
-			if (sold == 'true') {
-				//console.log('entro en vender', sold);
-				await advert.vender()
-			} else {
-				//console.log('entro en no vender', sold);
-				await advert.no_Vender()
-			}
-		}
-		else {
-			//console.log('salimos sin actualizar', sold);
-			return res.status(404).json({ error: 'data not changed, please review url request' });
-		};
-			
-		const anuncioActualizadoExt = await Advertisement.findOne({ _id: _id }).populate({
-			path: 'userId',
-		});
+    const { sold } = req.body;
+    if (sold != undefined) {
+      if (sold == 'true') {
+        //console.log('entro en vender', sold);
+        await advert.vender();
+      } else {
+        //console.log('entro en no vender', sold);
+        await advert.no_Vender();
+      }
+    } else {
+      //console.log('salimos sin actualizar', sold);
+      return res
+        .status(404)
+        .json({ error: 'data not changed, please review url request' });
+    }
 
-		if (!anuncioActualizadoExt) {
-			return res.status(404).json({ error: 'advert not found' });
-		}
-		
-		res.status(201).json({ result: anuncioActualizadoExt });
-	} catch (error) {
-		next(error);
-	}
+    const anuncioActualizadoExt = await Advertisement.findOne({
+      _id: _id,
+    }).populate({
+      path: 'userId',
+    });
+
+    if (!anuncioActualizadoExt) {
+      return res.status(404).json({ error: 'advert not found' });
+    }
+
+    res.status(201).json({ result: anuncioActualizadoExt });
+  } catch (error) {
+    next(error);
+  }
 });
-
 
 module.exports = router;
