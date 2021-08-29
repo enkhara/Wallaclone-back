@@ -56,8 +56,9 @@ app.use('/apiv1/messages', require('./routes/messages'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	//res.header("Access-Control-Allow-Origin", "*");
-    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.set("Access-Control-Allow-Origin", "*");
+	res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+	res.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next(createError(404));
 });
 
