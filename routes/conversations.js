@@ -1,11 +1,12 @@
 'use strict';
+const jwtAuth = require('../lib/jwtAuth');
 
 const router = require('express').Router();
 const Conversation = require('../models/Conversation');
 
 // new Conversation
 /*********************************IN USE********************************/
-router.post('/', async (req, res, next) => {
+router.post('/', jwtAuth, async (req, res, next) => {
 	//console.log(req.body);
 	const { advertisementId, senderId, receiverId } = req.body;
 	const newConversation = new Conversation({
@@ -26,7 +27,7 @@ router.post('/', async (req, res, next) => {
 /***************************IN USE***************************/
 //router.get('/:userId/:advertisementId', async (req, res, next) => {
 
-router.get('/userConversations/:userId', async (req, res, next) => {
+router.get('/userConversations/:userId', jwtAuth, async (req, res, next) => {
 	try {
 		const userId = req.params.userId;
 		//console.log('userId', userId);
@@ -41,7 +42,7 @@ router.get('/userConversations/:userId', async (req, res, next) => {
 });
 /*****************************IN USE*********************************/
 //for speakers in conversation for know who is online
-router.get('/users/:userId', async (req, res, next) => {
+router.get('/users/:userId', jwtAuth, async (req, res, next) => {
 	try {
 		const userId = req.params.userId;
 		console.log('userId', userId);
@@ -65,7 +66,7 @@ router.get('/users/:userId', async (req, res, next) => {
 	}
 });
 
-router.get('/:userId/:advertisementId', async (req, res, next) => {
+router.get('/:userId/:advertisementId', jwtAuth, async (req, res, next) => {
 	try {
 		//console.log('userid', req.params);
 		const { userId, advertisementId } = req.params;
@@ -83,15 +84,17 @@ router.get('/:userId/:advertisementId', async (req, res, next) => {
 });
 /**************************IN USE******************************/
 //get all conversations for advertisement of user connected
-router.get('/:userId', async (req, res, next) => {
+router.get('/:userId', jwtAuth, async (req, res, next) => {
 	try {
 		//console.log('userid', req.params);
-		const { userId, advertisementId } = req.params;
+		const { userId } = req.params;
 		const conversation = await Conversation.find({
 			members: { $in: [userId] },
 			//members: { $in: [req.params.userId] },
 			//BUSCAR COMO FILTRAR POR DOS CAMPOS LISTA ANUNCIOS advertisements.js
-		}).populate({ path: 'advertisementId' });
+		})
+			.populate({ path: 'advertisementId' })
+			.populate({ path: 'members' });
 		res.status(200).json(conversation);
 	} catch (err) {
 		next(err);

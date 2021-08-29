@@ -116,7 +116,7 @@ class LoginController {
     res
       .status(201)
       .json({ message, info: emailStatus, test: verificationLinks });
-  }
+  };
 
   async createNewPassword(req, res, next) {
     const { newPassword, id } = req.body;
@@ -135,7 +135,8 @@ class LoginController {
       return res.status(400).json({ message: 'Somenthing goes wrong !' });
     }
     res.status(201).json({ message: 'update ' });
-  }
+  };
+
 }
 
 module.exports = new LoginController();

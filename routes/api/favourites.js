@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const path = require('path');
-const { Advertisement, User } = require('../../models'); // cargamos los modelos
+const { Advertisement, User } = require('../../models'); 
 const jwtAuth = require('../../lib/jwtAuth');
 
 /**
