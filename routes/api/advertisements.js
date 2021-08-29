@@ -310,7 +310,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
     if (sold === 'true') {
       soldNew = /true/i.test('true');
     } else {
-      solddNew = /true/i.test('false');
+      soldNew = /true/i.test('false');
     }
     console.log('sold booleana new', soldNew);
     if (soldNew === !advertOld.sold) {
@@ -330,7 +330,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
     }
 
     const anuncioActualizadoExt = await Advertisement.findOne({
-      _id: _idact,
+      _id: _id,
     }).populate({
       path: 'userId',
     });
@@ -411,7 +411,9 @@ router.put('/changereserved/:id', jwtAuth, async (req, res, next) => {
       return res.status(403).json({ error: 'UserId without authorization' });
     }
 
-    const { reserved } = req.body;
+	console.log('req.body', req.body)  
+	const { reserved } = req.body;
+	console.log('reserved recibido', reserved)
     if (reserved != undefined) {
       if (reserved == 'true') {
         //console.log('entro en reservar', reserved);
@@ -467,7 +469,9 @@ router.put('/changesold/:id', jwtAuth, async (req, res, next) => {
       return res.status(403).json({ error: 'UserId without authorization' });
     }
 
-    const { sold } = req.body;
+	console.log('req.body', req.body)  
+	const { sold } = req.body;
+	console.log('sold recibido', sold)
     if (sold != undefined) {
       if (sold == 'true') {
         //console.log('entro en vender', sold);
