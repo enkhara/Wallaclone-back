@@ -411,11 +411,11 @@ router.put('/changereserved/:id', jwtAuth, async (req, res, next) => {
       return res.status(403).json({ error: 'UserId without authorization' });
     }
 
-	console.log('req.body', req.body)  
+//	console.log('req.body', req.body)  
 	const { reserved } = req.body;
-	console.log('reserved recibido', reserved)
+	//console.log('reserved recibido', reserved)
     if (reserved != undefined) {
-      if (reserved == 'true') {
+      if (reserved == 'true' || reserved == true) {
         //console.log('entro en reservar', reserved);
         await advert.reservar();
       } else {
@@ -473,7 +473,7 @@ router.put('/changesold/:id', jwtAuth, async (req, res, next) => {
 	const { sold } = req.body;
 	console.log('sold recibido', sold)
     if (sold != undefined) {
-      if (sold == 'true') {
+      if (sold == 'true' || sold == true) {
         //console.log('entro en vender', sold);
         await advert.vender();
       } else {
