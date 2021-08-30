@@ -235,6 +235,10 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
       return res.status(403).json({ error: 'UserId without authorization' });
     }
     const { name, desc, transaction, price, tags, reserved, sold } = req.body;
+    console.log(
+      `control antes de hacer las logicas de guardar los cambios`,
+      req.body
+    );
     if (req.file) {
       image = req.file.filename;
     } else {
@@ -306,13 +310,13 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
         'Please click on the follwoing link, or paste this into your browser to complete the process';
       notification(req.params, title, msg, link);
     }
-    let soldNew;
+    let soldNew = false;
     if (sold === 'true') {
       soldNew = /true/i.test('true');
     } else {
       solddNew = /true/i.test('false');
     }
-    console.log('sold booleana new', soldNew);
+    // console.log('sold booleana new', soldNew);
     if (soldNew === !advertOld.sold) {
       //notifica que ha cambiado de vendido
       const title =
@@ -328,16 +332,16 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
       res.status(404).json({ error: 'not found' });
       return;
     }
+    await anuncioActualizado.actualizar();
+    // const anuncioActualizadoExt = await Advertisement.findOne({
+    //   _id: _idact,
+    // }).populate({
+    //   path: 'userId',
+    // });
 
-    const anuncioActualizadoExt = await Advertisement.findOne({
-      _id: _idact,
-    }).populate({
-      path: 'userId',
-    });
-
-    if (!anuncioActualizadoExt) {
-      return res.status(404).json({ error: 'advert not found' });
-    }
+    // if (!anuncioActualizadoExt) {
+    //   return res.status(404).json({ error: 'advert not found' });
+    // }
 
     res.status(201).json({ result: anuncioActualizadoExt });
   } catch (error) {
@@ -411,10 +415,30 @@ router.put('/changereserved/:id', jwtAuth, async (req, res, next) => {
       return res.status(403).json({ error: 'UserId without authorization' });
     }
 
-    const { reserved } = req.body;
+    const { reserved, name } = req.body;
     if (reserved != undefined) {
+      let paintReserved = '';
+      let reservedNew;
       if (reserved == 'true') {
+        reservedNew = /true/i.test('true');
+        paintReserved = 'reserved';
+      } else {
+        reservedNew = /true/i.test('false');
+        paintReserved = 'no reserverd';
+      }
+
+      if (reservedNew !== advertOld.reserved) {
         //console.log('entro en reservar', reserved);
+        const title =
+          'The advert ' +
+          `${name}` +
+          ' you had in your favorites in wallaclone has been ' +
+          `${paintReserved}`;
+        const link = `${authPath}${name}/${_id}`;
+        const msg =
+          'Please click on the follwoing link, or paste this into your browser to complete the process';
+        notification(req.params, title, msg, link);
+
         await advert.reservar();
       } else {
         //console.log('entro en desreservar', reserved);
@@ -467,10 +491,27 @@ router.put('/changesold/:id', jwtAuth, async (req, res, next) => {
       return res.status(403).json({ error: 'UserId without authorization' });
     }
 
-    const { sold } = req.body;
+    const { sold, name } = req.body;
     if (sold != undefined) {
-      if (sold == 'true') {
-        //console.log('entro en vender', sold);
+      let soldNew;
+      if (sold === 'true') {
+        soldNew = /true/i.test('true');
+      } else {
+        solddNew = /true/i.test('false');
+      }
+      console.log('sold booleana new', soldNew);
+      //console.log('entro en vender', sold);
+
+      if (soldNew === !advertOld.sold) {
+        //notifica que ha cambiado de vendido
+        const title =
+          'The advert ' +
+          `${name}` +
+          ' you had in your favorites in wallaclone has been sold';
+        const link = `${authPath}${name}/${_id}`;
+        const msg =
+          'Please click on the follwoing link, or paste this into your browser to complete the process';
+        notification(req.params, title, msg, link);
         await advert.vender();
       } else {
         //console.log('entro en no vender', sold);
