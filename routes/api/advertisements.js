@@ -314,7 +314,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
     if (sold === 'true') {
       soldNew = /true/i.test('true');
     } else {
-      solddNew = /true/i.test('false');
+      soldNew = /true/i.test('false');
     }
     // console.log('sold booleana new', soldNew);
     if (soldNew === !advertOld.sold) {
@@ -332,7 +332,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
       res.status(404).json({ error: 'not found' });
       return;
     }
-    await anuncioActualizado.actualizar();
+    // await anuncioActualizado.actualizar();
     // const anuncioActualizadoExt = await Advertisement.findOne({
     //   _id: _idact,
     // }).populate({
@@ -342,6 +342,15 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
     // if (!anuncioActualizadoExt) {
     //   return res.status(404).json({ error: 'advert not found' });
     // }
+    const anuncioActualizadoExt = await Advertisement.findOne({
+      _id: _id,
+    }).populate({
+      path: 'userId',
+    });
+
+    if (!anuncioActualizadoExt) {
+      return res.status(404).json({ error: 'advert not found' });
+    }
 
     res.status(201).json({ result: anuncioActualizadoExt });
   } catch (error) {
