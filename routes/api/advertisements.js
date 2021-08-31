@@ -245,6 +245,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
       // no nos pasan la imagen, mantenemos la imagen actual
       image = advertOld.image;
     }
+   
     //Convertimos string de tags en array
     var strArr = tags.replace(/\s+/g, '').split(',');
     var tagsArray = [];
@@ -332,16 +333,7 @@ router.put('/:id', jwtAuth, upload.single('image'), async (req, res, next) => {
       res.status(404).json({ error: 'not found' });
       return;
     }
-    // await anuncioActualizado.actualizar();
-    // const anuncioActualizadoExt = await Advertisement.findOne({
-    //   _id: _idact,
-    // }).populate({
-    //   path: 'userId',
-    // });
-
-    // if (!anuncioActualizadoExt) {
-    //   return res.status(404).json({ error: 'advert not found' });
-    // }
+   
     const anuncioActualizadoExt = await Advertisement.findOne({
       _id: _id,
     }).populate({
@@ -387,6 +379,7 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 
 /**
  * DELETE /apiv1/advertisements/user/:user_id (Eliminará todos los anuncios dado un user_id)
+ * este endpoint no se utliza
  */
 router.delete('/user/:id', jwtAuth, async (req, res, next) => {
   try {
@@ -395,6 +388,7 @@ router.delete('/user/:id', jwtAuth, async (req, res, next) => {
     // Borrará todos los anuncios del usuario que le pasamos como parámetro
     await Advertisement.deleteMany({ userId: _userId });
     res.status(201).json();
+
   } catch (error) {
     next(error);
   }
