@@ -1,8 +1,12 @@
-# Wallaclone-back
 
-Las colecciones de la base de datos mongo son:
-- users
-- advertisements
+# APIWallaclone 
+
+Las colecciones de la base de datos mongo de nuestra aplicación son:
+
+* users
+* advertisements
+* conversations
+* messages
 
 Las peticiones a la API nos devolveran la información en formato JSON.
 ## API Methods
@@ -10,7 +14,7 @@ Las peticiones a la API nos devolveran la información en formato JSON.
 La ruta base http://localhost:3001/ se deberá modificar en el .env para que apunte a dónde resida la aplicación de node, podemos dejar esta ruta para probarlo en entorno de desarrollo en local.
 ### ROUTES API
 
-Las llamadas a la API se podrán realizar desde las siguientes rutas o routers:
+Las llamadas a la API se podrán realizar desde las siguientes rutas o routers (ENDPOINTS):
 # ROUTES API USER 
 
 ## PUBLIC ZONE
