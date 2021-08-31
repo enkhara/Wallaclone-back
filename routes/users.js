@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-//const User = require('../models/User');
-//const Advertisement = require('../models/Advertisement');
-const { User, Advertisement } = require('../models');
+const fs = require("fs");
+const path = require('path');
+const { User, Advertisement, Conversation, Message } = require('../models');
 const jwtAuth = require('../lib/jwtAuth');
+
 
 /* GET /users listing. */
 router.get('/', async function (req, res, next) {
@@ -231,14 +232,97 @@ router.put('/deletefavourite/:id', jwtAuth, async (req, res, next) => {
 
 /**
  * DELETE /users: id (Elimina un usuario dado su id)
- * Deberá eliminar también los anuncios que le pertenezcan
+ * Eliminar los anuncios de los cuales es propietario,
+ * como estos anuncios pueden estar incluidos en conversaciones de chat 
+ * los eliminamos también, así como los mensajes de dichas conversaciones.
+ * Eliminamos los anuncios del usuario eliminado de todos los array de favoritos 
+ * que los contuvieran en otros usuarios.
+ * Eliminamos los archivos de las imagenes relacionadas con estos anuncios del usuario
  */
 router.delete('/:id', jwtAuth, async (req, res, next) => {
+	
+	const path_imagenes = path.join(__dirname, '../public/images/adverts/');
+		
 	try {
-		const _id = req.params.id;
-
-		// 1º Deberá eliminar los anuncios que le pertenezcan
+		const _id = req.params.id;  // Id de Usuario
+		console.log('id de usuario', _id);
+		
 		try {
+			
+			// Buscamos los anuncios que le pertenecen al usuario
+			const advertsUser = await Advertisement.find({ userId: _id });
+			console.log('anuncios del usuario a eliminar', advertsUser);
+
+			// Actualizamos los arrays de favoritos del resto de usuarios que contengan estos ids 
+			for (i = 0; i < advertsUser.length; i++) {
+				//por cada id de anuncio, buscamos que usuarios lo contienen entre sus favoritos
+				// para eliminarlos
+				
+				try {
+					const usersfavs = await User.find({ ads_favs: advertsUser[i]._id });
+					for (j = 0; j < usersfavs.length; j++) {
+						let index = usersfavs[j].ads_favs.indexOf(advertsUser[i]._id);
+						if (index > -1) {
+							console.log('id anuncio a eliminar existe');
+							usersfavs[j].ads_favs.splice(index, 1);
+							console.log('Anuncio favorito eliminado del array de favoritos del usuario de id', userfavs[j]._id);
+						
+							if (_id != usersfavs[j]._id) {
+								console.log('no es el mismo usuario, actualizamos su array de favoritos');
+								await User.findOneAndUpdate(
+									{ _id: usersfavs[j]._id },
+									usersfavs[j].ads_favs,
+									{
+										new: true,
+										useFindAndModify: false,
+									}
+								);
+							}
+						}
+					}
+				}
+				catch (error) {
+					next(error);
+				}
+			}
+
+			// Hacemos lo mismo con las conversaciones que contengan estos anuncios
+			for (i = 0; i < advertsUser.length; i++) {
+				// Obtenemos todas las conversaciones, para eliminar sus mensajes 
+				const conversations = await Conversation.find({ advertisementId: advertsUser[i]._id });
+
+				try {
+					for (k = 0; k < conversations.length; k++) {
+						console.log('Eliminando los mensajes de las conversaciones del id anuncio ', advertsUser[i]._id , ' y id de conversación ', conversations[k].conversationId );
+						await Message.DeleteMany({conversationId: conversations[k].conversationId})
+					}
+				} catch (error) {
+					next(error)	
+				};
+
+				try {
+					// Borramos todas las posibles conversaciones por anuncios
+					console.log('Borrando las conversaciones del id anuncio ', advertsUser[i]._id);
+					await Conversation.deleteMany({ advertisementId: advertsUser[i]._id })
+				}
+				catch (error) {
+					next(error)
+				}
+
+			}
+
+			// Eliminamos las imágenes de estos anuncios del servidor
+			
+			for (i = 0; i < advertsUser.length; i++) {
+				if (advertsUser[i].image != '') {
+					if (fs.existsSync(path.join(path_imagenes, advertsUser[i].image))) {
+						fs.unlinkSync(path.join(path_imagenes, advertsUser[i].image))
+					}
+				}
+			}
+			
+			// Deberá eliminar los anuncios que le pertenezcan
+			console.log('Eliminamos los anuncios del id usuario', _id);
 			const { deletedCount } = await Advertisement.deleteMany({ userId: _id });
 			console.log(
 				`\nEliminado${
@@ -247,13 +331,19 @@ router.delete('/:id', jwtAuth, async (req, res, next) => {
 					deletedCount > 1 ? 's' : ''
 				} del usuario.`
 			);
+			
 		} catch (error) {
 			next(error);
 		}
-		// 2º Eliminar el usuario
-		//await Anuncio.remove({_id:_id}); para evitar el error de la consola deprecated
-		await User.deleteOne({ _id: _id });
-		res.json();
+
+		// Y por último eliminamos al usuario para completar su baja definitiva de wallaclone
+		try {
+			console.log('Eliminamos al usuario id ', _id);
+			await User.deleteOne({ _id: _id });
+			res.json();
+		} catch (error) {
+			next(error);
+		};
 	} catch (error) {
 		next(error);
 	}

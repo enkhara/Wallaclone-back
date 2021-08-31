@@ -9,7 +9,7 @@ const mailer = require('../../lib/mailer');
 const nodemailer = require('nodemailer');
 const notification = require('../../controllers/notificationcontroller');
 
-const UPLOAD_FOLDER = process.env.UPLOAD_FOLDER || 'public';
+//const UPLOAD_FOLDER = process.env.UPLOAD_FOLDER || 'public';
 const authPath = process.env.LOCAL_HOST_WEB_ADVERT;
 
 //const cote = require('cote');
