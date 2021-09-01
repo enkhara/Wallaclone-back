@@ -1,8 +1,12 @@
-# Wallaclone-back
 
-Las colecciones de la base de datos mongo son:
-- users
-- advertisements
+# APIWallaclone 
+
+Las colecciones de la base de datos mongo de nuestra aplicación son:
+
+* users
+* advertisements
+* conversations
+* messages
 
 Las peticiones a la API nos devolveran la información en formato JSON.
 ## API Methods
@@ -10,7 +14,7 @@ Las peticiones a la API nos devolveran la información en formato JSON.
 La ruta base http://localhost:3001/ se deberá modificar en el .env para que apunte a dónde resida la aplicación de node, podemos dejar esta ruta para probarlo en entorno de desarrollo en local.
 ### ROUTES API
 
-Las llamadas a la API se podrán realizar desde las siguientes rutas o routers:
+Las llamadas a la API se podrán realizar desde las siguientes rutas o routers (ENDPOINTS):
 # ROUTES API USER 
 
 ## PUBLIC ZONE
@@ -51,6 +55,13 @@ Elimina los datos del usuario id, además de todos los anuncios de dicho usuario
 ### PUT /users/:id
 
 Actualiza los datos del usuario id. En el body de tipo x-www-form-urlencoded incorporamos el username, email y password que deseamos actualizar. 
+
+### GET /apiv1/favourites/:userId 
+
+Url ejemplo petición: <http://localhost:3001/apiv1/favourites/60eb19914d799d6a125a666a>
+
+Dado un id de usuario obtiene un JSON con sus anuncios favoritos. 
+
 ### PUT /users/addfavourite/:id (id de usuario)
 
 Url ejemplo petición: <http://localhost:3001/users/addfavourite/60f3e6b2631489df48ff8844>
@@ -214,3 +225,4 @@ Solo actualiza el dato de reservado (reserved) del id anuncio, este dato se lo p
 
 
 URL ejemplo: <http://localhost:3001/apiv1/advertisements/changesold/6111b57f5a6a9ae95d2930aa>
+

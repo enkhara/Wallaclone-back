@@ -20,7 +20,12 @@ require('dotenv').config();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+//app.set('view engine', 'ejs');
+app.set('view engine', 'html');
+app.engine('html', require('ejs').__express);
+
+// Variable global
+app.locals.title ='Wallaclone'; 
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/email', mailsRouter);
+app.use('/docum', require('./routes/docum'));
 
 app.use(cors());
 
@@ -51,8 +57,9 @@ app.put('/apiv1/advertisements/changesold', jwtAuth, advertsRouter);
 app.use('/apiv1/advertisements', advertsRouter);
 app.use('/apiv1/favourites', jwtAuth, advertsFavRouter);
 app.use('/apiv1/tags', require('./routes/api/tags'));
-app.use('/apiv1/conversations', require('./routes/conversations'));
-app.use('/apiv1/messages', require('./routes/messages'));
+app.use('/apiv1/conversations', jwtAuth, require('./routes/conversations'));
+app.use('/apiv1/messages', jwtAuth, require('./routes/messages'));
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
