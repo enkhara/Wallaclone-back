@@ -1,23 +1,67 @@
 
 # APIWallaclone 
 
-Las colecciones de la base de datos mongo de nuestra aplicación son:
+Api for the iOS/Android apps.
+## Deploy
+
+### Install dependencies  
+    
+    npm install
+
+Copy .env.example to .env and review the config.
+
+    cp .env.example .env
+
+The path http://localhost:3001/ must be modified in the .env to point to where the node application resides, we can leave this path to test it in local development environment.
+### Configure  
+
+Review models/connectMongoose.js to set database configuration
+
+### Database initilization
+
+If you want to reset your DB, you can run:
+
+    npm run init-db
+
+## Start
+
+To start a single instance:
+    
+    npm start
+
+To start in development mode:
+
+    npm run dev (including nodemon & debug log)
+
+
+
+## API Methods
+
+## API v1 info
+
+
+### Base Path
+
+The API can be used with the followed paths: 
+
+* [API V1 users](/apiv1/users)
+* [API V1 advertisements](/apiv1/advertisements)
+* [API V1 favourites](/apiv1/favourites)
+* [API V1 conversations](/apiv1/conversations)
+* [API V1 messages](/apiv1/messages)
+
+
+The collections of the mongo database of our application are:
 
 * users
 * advertisements
 * conversations
 * messages
 
-Las peticiones a la API nos devolveran la información en formato JSON.
-## API Methods
-
-La ruta base http://localhost:3001/ se deberá modificar en el .env para que apunte a dónde resida la aplicación de node, podemos dejar esta ruta para probarlo en entorno de desarrollo en local.
-### ROUTES API
-
-Las llamadas a la API se podrán realizar desde las siguientes rutas o routers (ENDPOINTS):
-# ROUTES API USER 
-
+Requests to the API will return the information in JSON format.
+# API USER ROUTES (END POINTS)
 ## PUBLIC ZONE
+
 ### USER REGISTER /apiv1/auth/signup
 
 <http://localhost:3001/apiv1/auth/signup>
@@ -25,204 +69,276 @@ Las llamadas a la API se podrán realizar desde las siguientes rutas o routers (
 
 <http://localhost:3001/apiv1/auth/signin>
 
-En el body de tipo x-www-form-urlencoded incorporamos el username y el password. 
-Seleccionamos el método POST, y al pulsar send, nos devuelve un JWT(JSON web token) válido. 
+In the body of type x-www-form-urlencoded we incorporate the username and password. 
+We select the POST method, and when we press send, it returns a valid JWT(JSON web token). 
 ### GET ALL USERS /users 
 
 <http://localhost:3001/users>
 
-Listará todos los usuarios.
-### GET /users/:id 
+List all users.
+### GET /users/:userid 
 
-<http://localhost:3001/users/:id> 
+<http://localhost:3001/users/:userid> 
 
-Obtener un usuario dado su id que nos pasan por params.
+Get a user given their id that pass us through params.
 ### FORGOT PASSWORD /apiv1/auth/forgot-password
 
 <http://localhost:3001/apiv1/auth/forgot-password>
 
-## ROUTES API USER (PRIVATE ZONE)
+## PRIVATE ZONE
 
-Estas peticiones deben incluir el JWT (json web token) en la llamada a la URL de la petición. 
-El JWT tendrá que indicarse en Headers en el key "Authorization" y en el valor pondremos el valor del token JWT.
+These requests must include the JWT (json web token) in the call to the request URL. 
+The JWT will have to be indicated in Headers in the key "Authorization" and in the value we will put the value of the JWT token.
 ### CREATE NEW PASSWORD  /apiv1/auth/new-password
 
 <http://localhost:3001/apiv1/auth/new-password>
 
-### DELETE /users/:id 
+### DELETE /users/:userid 
 
-Elimina los datos del usuario id, además de todos los anuncios de dicho usuario.
-### PUT /users/:id
+Delete all the data of the user id (userdata, adverts, images, conversations, etc.) and update the favorites of the rest of the users, eliminating the deleted ads of this user.
+### PUT /users/:userid
 
-Actualiza los datos del usuario id. En el body de tipo x-www-form-urlencoded incorporamos el username, email y password que deseamos actualizar. 
-
+Updates the user id data. In the body of type x-www-form-urlencoded we incorporate the username, email and password that we want to update. 
 ### GET /apiv1/favourites/:userId 
 
-Url ejemplo petición: <http://localhost:3001/apiv1/favourites/60eb19914d799d6a125a666a>
+Given a user id per params you get a JSON with your favorite ads.
 
-Dado un id de usuario obtiene un JSON con sus anuncios favoritos. 
+Url Example Request: <http://localhost:3001/apiv1/favourites/60eb19914d799d6a125a666a>
 
-### PUT /users/addfavourite/:id (id de usuario)
+JSON Result
 
-Url ejemplo petición: <http://localhost:3001/users/addfavourite/60f3e6b2631489df48ff8844>
+````
+[
+    {
+        "tags": [
+            "motor"
+        ],
+        "_id": "6111b57f5a6a9ae95d2930b0",
+        "name": "Bicicleta adulto",
+        "desc": "se busca bicicleta de paseo en buen estado",
+        "transaction": "wanted",
+        "price": 350,
+        "image": "bicicleta.jpg",
+        "userId": "60f3e6b2631489df48ff8844",
+        "reserved": false,
+        "sold": false,
+        "createdAt": "2021-07-18T15:37:22.952Z",
+        "updatedAt": "2021-07-18T15:37:22.952Z",
+        "__v": 0
+    },
+    {
+        "tags": [
+            "lifestyle",
+            "mobile"
+        ],
+        "_id": "6111b57f5a6a9ae95d2930b1",
+        "name": "iPhone 3GS",
+        "desc": "Busco móvil 3G por unos 350 euros",
+        "transaction": "wanted",
+        "price": 350,
+        "image": "movil.jpg",
+        "userId": "60f3e6b2631489df48ff8844",
+        "reserved": false,
+        "sold": true,
+        "createdAt": "2021-07-18T15:42:03.507Z",
+        "updatedAt": "2021-08-30T15:46:13.343Z",
+        "__v": 0
+    },
+    {
+        "tags": [
+            "lifestyle"
+        ],
+        "_id": "6127d79850553ef4dec947bd",
+        "name": "jersey zara",
+        "desc": "JERSEY DE LANA",
+        "transaction": "sale",
+        "price": 8,
+        "image": "",
+        "userId": "6127b4c638aa48656cb49455",
+        "createdAt": "2021-08-26T18:04:08.381Z",
+        "updatedAt": "2021-08-26T18:04:08.382Z",
+        "__v": 0,
+        "reserved": false,
+        "sold": false
+    }
+]
+````
+### PUT /users/addfavourite/:userid
 
-Añade el anuncio en el array ads_favs (anuncios favoritos) de un usuario dado su id, en el body le pasamos el id del anuncio a añadir.
+Add the ad in the array ads_favs (favorite ads) of a user given their id, in the body we pass the id of the ad to add.
 
-### PUT /users/deletefavourite/:id (id de usuario)  
+Url Example request: <http://localhost:3001/users/addfavourite/60f3e6b2631489df48ff8844>
+### PUT /users/deletefavourite/:userid
 
-Dado un id de usuario, elimina el id de anuncio (que nos pasan en el body de tipo x-www-form-urlencoded) del array de ads_favs de dicho usuario.
+Given a user id per params, it removes the ad id (which is passed to us in the x-www-form-urlencoded body) from that user's ads_favs array.
 
-# ROUTES API ADVERTISEMENTS
+Url example request: <http://localhost:3001/users/deletefavourite/60f3e6b2631489df48ff8844>
+# API ADVERTISEMENTS ROUTES (END POINTS)
 
 ## PUBLIC ZONE 
-En la zona pública no es necesario agregar el token en la cabecera de las peticiones.
+
+In the public area it is not necessary to add the JWT in the header of the requests.
 ### GET TAGS /apiv1/tags
 
 Url: <http://localhost:3001/apiv1/tags>
 
-Muestra los distintos tags definidos.
+Returns Json with the defined tags:
+````
+[
+"kitchen",
+"lifestyle",
+"mobile",
+"motor",
+"work"
+]
+````
 ### GET ADVERTISEMENTS /apiv1/advertisements
 
 Url: <http://localhost:3001/apiv1/advertisements>
 
-Devuelve todos los anuncios definidos en la base de datos.
+Returns all ads defined in the database.
 ### GET ADVERTISEMENTS/:id /apiv1/advertisements/:id
 
-Ejemplo URL: <http://localhost:3001/apiv1/advertisements/601fe467842fa20e151eab52>
+Returns the ad by id from the advertisements collection.
 
-Devuelve el anuncio por id de la coleccion advertisements.
-### GET /apiv1/advertisements con filtros en query params
+Example URL: <http://localhost:3001/apiv1/advertisements/601fe467842fa20e151eab52>
 
-Explicamos a continuación los distintos tipos de filtros que podemos aplicar en la ruta /apiv1/advertisements.
+### GET /apiv1/advertisements 
+
+* With filters en query params 
+
+We explain the different types of filters that we can apply in the path /apiv1/advertisements.
 - #### Resultados 
 
-Un fichero en formato JSON que nos muestra los datos resultantes de realizar la consulta a la base de datos según los filtros que hayamos establecido en la llamada http.
-- #### Ejemplos:
+A file in JSON format that shows us the data resulting from making the query to the database according to the filters that we have established in the http request.
+- #### Examples:
 
-    **1. Lista de anuncios con páginación** 
+    **1. List of ads with pagination** 
 
-    Si mostramos los anuncios de 10 en 10 en cada pagína, estas serían las llamadas http a realizar:
+    If we show the ads of 10 in 10 on each page, these would be the http calls to be made:
 
-        para la 1ª Página:  
+        Firts page:  
         http://localhost:3001/apiv1/advertisements?skip=0&limit=10
-        para la 2ª página: 
+        Second page: 
         http://localhost:3001/apiv1/advertisements?skip=10&limit=10
-        y siguiente página: 
+        and next page: 
         http://localhost:3001/apiv1/advertisements?skip=20&limit=10  
 
-    **2. Lista de anuncios con filtro por tags** 
+    **2. List of ads with filter by tags** 
 
-    Podremos buscar por uno o varios tags (separados por comas)
+    We can search by one or more tags (separated by commas)
 
         http://localhost:3001/apiv1/advertisements?tags=work,motor
         http://localhost:3001/apiv1/advertisements?tags=lifestyle
 
-    **3. Lista de anuncios por tipo de anuncio (Venta ó Búsqueda)**
+    **3. List of ads by transaction type (Sale or Wanted)**
 
         http://localhost:3001/apiv1/advertisements?transaction=wanted
-        Obtiene los anuncios de tipo Se Busca
-
+        
         http://localhost:3001/apiv1/advertisements?transaction=sale
-        Obtiene los anuncios de tipo Se Vende
 
-    **4. Lista de anuncios por rango de precios**
+    **4. List of ads by price range**
 
         http://localhost:3001/apiv1/advertisements?price=500-5000
-        Obtiene los anuncios cuyo precio es mayor o igual a 500 y menor o igual a 5000
+        Gets ads whose price is greater than or equal to 500 and less than or equal to 5000
 
         http://localhost:3001/apiv1/advertisements?price=-10000
-        Obtiene los anuncios cuyo precio es menor o igual a 10000
+        Gets ads whose price is less than or equal to 10000
 
         http://localhost:3001/apiv1/advertisements?price=50000-
-        Obtiene los anuncios cuyo precio es mayor a 50000
+        Gets ads that are priced over 50000
 
-    **5. Lista de anuncios cuyo nombre empiece por una palabra**
+    **5. List of ads whose name begins with a word**
 
         http://localhost:3001/apiv1/advertisements?name=agenda
-        Obtiene los anuncios que comienzan por la palabra agenda
+        Gets ads that begin with the word agenda
 
-    **6. Lista de anuncios con filtros de ordenación**
+    **6. List of ads with sort filters**
 
-    Podemos ordenar por varios campos separándolos por espacios. 
+    We can sort by several fields separating them by spaces.
 
         http://localhost:3001/apiv1/advertisements?sort=price -name
-        Obtiene los anuncios ordenados por precio ascendente y por nombre descendentemente.
+        Gets ads sorted by ascending price and by name descendingly.
 
         http://localhost:3001/apiv1/advertisements?sort=price name
-        Obtiene los anuncios ordenados por precio ascendente y por nombre ascendentemente.
+        Gets ads sorted by ascending price and by name ascending.
 
         http://localhost:3001/apiv1/advertisements?sort=-createdAt&limit=9
-        Obtiene los 9 últimos anuncios creados, ordena descendentemente por fecha de creación mostrando los 9.
+        Gets the last 9 ads created, sorts descendingly by creation date showing all 9.
 
-    **7. Lista de anuncios que solo muestre algunos campos**
+    **7. List of ads that only shows a few fields**
 
         http://localhost:3001/apiv1/advertisements?fields=image sale
-        Obtiene los anuncios con los campos foto y tipo de venta
+        Gets the ads with the image and sale type fields
 
         http://localhost:3001/apiv1/advertisements?fields=price name sale -_id
-        Obtiene los anuncios con los campos que queramos seleccionar separados por espacios, en este caso precio, nombre y tipo de venta, además si queremos eliminar el campo _id, se lo podemos indicar con -_id
+        It gets the ads with the fields that we want to select separated by spaces, in this case price, name and type of sale, also if we want to eliminate the field _id, we can indicate it with -_id
 
-    **8. Lista de anuncios ordenados por el campo fecha de creación y/o actualización**
+    **8. List of ads sorted by the createdAt and/or updatedAt date field**
+
+        http://localhost:3001/apiv1/advertisements?sort=-createdAt
+        Gets ads sorted by createdAt date in descending order
 
         http://localhost:3001/apiv1/advertisements?sort=-updatedAt
-        Obtiene los anuncios ordenados por fecha de modificación en orden descendente
+        Gets ads sorted by updatedAt date in descending order
+
+        http://localhost:3001/apiv1/advertisements?sort=createdAt
+        Gets ads sorted by createdAt date in asccending order
 
         http://localhost:3001/apiv1/advertisements?sort=updatedAt
-        Obtiene los anuncios ordenados por fecha de modificación en orden ascendente
+        Gets ads sorted by updatedAt date in ascending order
 
-    **9 Lista de anuncios con varios filtros**
+    **9 List of ads with multiple filters**
 
         http://localhost:3001/apiv1/advertisements?tag=mobile&sale=false&name=ip&price=50-&skip=0&limit=2&sort=price
-        La consulta a la colección anuncios obtiene (response) un documento anuncio que cumple todos los filtros que le hemos hecho en la petición http (request).
 
-    **10 Lista de anuncios por userId**
+        The query to the ads collection obtains (response) the ad documents that comply with all the filters that we have indicated in the request http (request).
+
+    **10 List of ads by userId**
         http://localhost:3001/apiv1/advertisements?userId=60f3e6b2631489df48ff8844
-        Obtiene los anuncios dado un userId
+        Gets ads for a userId
 
 ## PRIVATE ZONE
 
-Todas las llamadas a la API de la zona privada necesitaran incorporar el token válido (token que no haya expirado) en la cabecera de la petición (Headers, campo key: Authorization, en value pondremos el token) para poder realizar la petición URL. Este token lo obtendremos en la llamada al User Login. 
+All calls to the API of the private zone will need to incorporate the valid token JWT (token that has not expired) in the header of the request (Headers, key field: Authorization, in value we will put the token) to be able to make the request URL. 
+This token will be obtained in the call to the User Login. 
 
 ### POST /apiv1/advertisements 
 
-Creará un nuevo anuncio en la colección de anuncios.
-Para probarlo vamos a la aplicación POSTMAN, creamos una nueva pestaña, seleccionamos el método POST y añadimos la url: <http://localhost:3001/apiv1/advertisements> 
+You'll create a new ad in your ad collection (advertisements).
+To test it we go to the POSTMAN application, create a new tab, select the POST method and add the url: <http://localhost:3001/apiv1/advertisements>
 
-En Headers, tenemos que rellenar en el value del key "Authorization" el token válido.
-Seleccionamos el selector dónde le vamos a pasar la información, en este caso, en el body y el formato de la información: form-data. 
-Rellenamos los campos en el key de cada campo de nuestro esquema anuncio e insertamos en el value de cada campo el valor que queramos crear. 
-Y a continuación, pulsamos el botón SEND en la aplicación de Postman. Postman nos da la respuesta con un status 201 tal como hemos establecido en nuestra api, con lo que se ha creado el nuevo anuncio en la base de datos correctamente. 
-
+In Headers, we have to fill in the value of the key "Authorization" the valid token.
+We select the selector where we are going to pass the information, in this case, in the body and format of the information: form-data. 
+We fill in the fields in the key of each field of our ad scheme and insert in the value of each field the value we want to create. 
+And then, we press the SEND button in the Postman app. Postman gives us the answer with a status 201 as we have established in our api, so the new ad has been created in the database correctly. 
 ### PUT /apiv1/advertisements/:id 
 
-Actualizará los datos de el anuncio dado su id. Seleccionamos el método PUT, también deberemos pasar en la cabecera el token de Authorization.
-Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
-Los datos de la modificación del anuncio se rellenan el body en formato form-data.
+It will update the data of the ad given its id. We select the PUT method, we must also pass the Authorization token in the header.
+It is verified that the user making the request is the user who owns the ad.
+The data of the modification of the advertisement are filled in the body in form-data format.
 
-URL ejemplo: <http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f>
-
+URL Example: <http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f>
 ### DELETE /apiv1/advertisements/:id 
 
-Elimina un anuncio dado su id de anuncio.
-Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
+Deletes a given ad from its ad id.
+It is verified that the user making the request is the user who owns the ad.
 
-URL ejemplo: <http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f>
-
+URL Example: <http://localhost:3001/apiv1/advertisements/60f44bcb3db9c46749691b4f>
 ### PUT /apiv1/advertisements/changereserved/:id 
 
-Actualizará el dato de reservado (reserved) del id anuncio (pasado por params). 
-Utilizamos el método PUT, también deberemos pasar en la cabecera el token de Authorization.
-Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
-Solo actualiza el dato de reservado (reserved) del id anuncio, este dato se lo pasamos en el body con formato x-www-form-urlencoded.
+It will update the value of the reserved field of the ad id (passed by params). 
+We use the PUT method, we must also pass the Authorization token in the header.
+It is verified that the user making the request is the user who owns the ad.
+It only updates the reserved data of the ad id, this data is passed to you in the body with x-www-form-urlencoded format.
 
-URL ejemplo: <http://localhost:3001/apiv1/advertisements/changereserved/6111b57f5a6a9ae95d2930aa>
+URL Example: <http://localhost:3001/apiv1/advertisements/changereserved/6111b57f5a6a9ae95d2930aa>
 ### PUT /apiv1/advertisements/changesold/:id 
 
-Actualizará el dato de vendido (sold) del id anuncio (pasado por params). 
-Utilizamos el método PUT, también deberemos pasar en la cabecera el token de Authorization.
-Se verifica que el usuario que realiza la petición sea el usuario propietario del anuncio.
-Solo actualiza el dato de reservado (reserved) del id anuncio, este dato se lo pasamos en el body con formato x-www-form-urlencoded.
+It will update the value of the sold field of the ad id (passed by params). 
+We use the PUT method, we must also pass the Authorization token in the header.
+It is verified that the user making the request is the user who owns the ad.
+It only updates the reserved data of the ad id, this data is passed to you in the body with x-www-form-urlencoded format.
 
-
-URL ejemplo: <http://localhost:3001/apiv1/advertisements/changesold/6111b57f5a6a9ae95d2930aa>
+URL Example: <http://localhost:3001/apiv1/advertisements/changesold/6111b57f5a6a9ae95d2930aa>
 

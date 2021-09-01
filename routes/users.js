@@ -27,7 +27,7 @@ router.get('/', async function (req, res, next) {
 		}
 
 		const resultado = await User.lista(filtro, limit, skip, fields, sort);
-		res.json(resultado);
+		res.json({ resultado });
 	} catch (err) {
 		next(err);
 	}
