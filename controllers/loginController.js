@@ -316,17 +316,16 @@ class LoginController {
 
   async createNewPassword(req, res, next) {
     const { newPassword, id } = req.body;
-
     if (!(newPassword && id)) {
       res.status(400).json({ message: 'requires fields' });
     }
 
     try {
-      const user = await User.findOne({ id });
-
+      const user = await User.findOne({ _id: id });
       const newPasswordCription = await User.hashPassword(newPassword);
-
-      await User.updateOne(user, { password: newPasswordCription });
+      const passwordUpdat = await User.updateOne(user, {
+        password: newPasswordCription,
+      });
     } catch (error) {
       return res.status(400).json({ message: 'Somenthing goes wrong !' });
     }
